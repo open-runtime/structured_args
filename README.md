@@ -89,15 +89,16 @@ The help output of the above example is:
 
 ```
 Hello World application
-  --name         Name of person to say hello to
-                 [Environment Variable: $GREETING_NAME]
-  --greeting     Message to say to person
-                 [Environment Variable: $GREETING_TYPE]
-                 must be one of Hello, Goodbye
-  --count        Number of times to greet the person
-                 [REQUIRED]
-                 [Environment Variable: $GREETING_COUNT]
-  -h, --help, -? Show help
+
+  --name                 Name of person to say hello to
+                         [Environment Variable: $GREETING_NAME]
+  --greeting             Message to say to person
+                         [Environment Variable: $GREETING_TYPE]
+                         must be one of Hello, Goodbye
+  --count                Number of times to greet the person
+                         [REQUIRED]
+                         [Environment Variable: $GREETING_COUNT]
+  -h, --help, -?         Show help
 ```
 
 ## Build Process
@@ -134,32 +135,34 @@ Group 1
   blah blah blah blah blah. This will be wrapped as needed. Thus, it will
   display beautifully in the console.
 
-  --names        no help available
-  -r, --header   Report header text
-  --filename     Filename to report stats on
+  --names                no help available
+  -r, --header           Report header text
+  --filename             Filename to report stats on
 
   This is just a single sentence but even it will be wrapped if necessary
 
 Group 2 -- OTHER
   Help before
 
-  --count        Count of times to say hello
-  --silly        Some other silly parameter to show double parsing. This also
-                 has a very long description that should word wrap in the
-                 output and produce beautiful display.
+  --count                Count of times to say hello
+  --silly                Some other silly parameter to show double parsing.
+                         This also has a very long description that should
+                         word wrap in the output and produce beautiful
+                         display.
   -v, --verbose, --no-verbose
-                 Turn verbose mode on.
-
-                 This is an example also of using multi-line help text that
-                 is formatted inside of the editor. This should be one
-                 paragraph. I'll add some more content here. This will be the
-                 last sentence of the first paragraph.
-
-                 This is another paragraph formatted very narrowly in the
-                 code editor. Does it look the same as the one above? I sure
-                 hope that it does. It would make help display very easy to
-                 implement.
-  -h, --help, -? Show help
+                         Turn verbose mode on.
+                         
+                         This is an example also of using multi-line help
+                         text that is formatted inside of the editor. This
+                         should be one paragraph. I'll add some more content
+                         here. This will be the last sentence of the first
+                         paragraph.
+                         
+                         This is another paragraph formatted very narrowly in
+                         the code editor. Does it look the same as the one
+                         above? I sure hope that it does. It would make help
+                         display very easy to implement.
+  -h, --help, -?         Show help
 
   Help after
 
@@ -369,12 +372,12 @@ $ dart run .\example\advanced_command_example.dart --help
 
 Example of using mixins to reduce argument declarations
 
-  -v, --verbose  Verbose mode
-  -h, --help, -? Show help
+  -v, --verbose          Verbose mode
+  -h, --help, -?         Show help
 
 COMMANDS
-  pull Pulls a Docker Image
-  run Runs a Docker Image
+  pull                   Pulls a Docker Image
+  run                    Runs a Docker Image
 
 ---
 
@@ -382,9 +385,9 @@ $ dart run .\example\advanced_command_example.dart run --help
 
 Runs a Docker Image
 
-  --pull         Pull image before running
-  --image        Docker Image
-  -h, --help, -? Show help
+  --pull                 Pull image before running
+  --image                Docker Image
+  -h, --help, -?         Show help
 
 ---
 

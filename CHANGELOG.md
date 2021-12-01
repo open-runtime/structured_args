@@ -1,3 +1,11 @@
+## 2.1.1 [Unreleased]
+
+- Fixed:
+    - Changed Help output to:
+        - Use a maximum of 80 columns
+        - Keep a consistent Command/Argument column width of 25 (introducing a linebreak on overflow)
+        - Sort commands by displayKey
+
 ## 2.1.0
 
 - Added:

@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:math';
 
 import 'package:collection/collection.dart' show IterableExtension;
 import 'package:reflectable/reflectable.dart';
@@ -213,18 +212,11 @@ class SmartArg {
       }
     }
 
-    const lineWidth = 78; // TODO: Can we get this from the terminal?
     const lineIndent = 2;
-    const maxKeyLenAllowed = 25; // Will include indent
+    const lineWidth = 80 - lineIndent;
     final linePrefix = ' ' * lineIndent;
-
-    final maxKeyLen = helpKeys.fold<int>(
-        0,
-        (a, b) => (b.length + lineIndent) > a &&
-                (b.length + lineIndent) < maxKeyLenAllowed
-            ? (b.length + lineIndent)
-            : a);
-    final keyPadWidth = min(maxKeyLenAllowed, maxKeyLen + 1);
+    const optionColumnWidth = 25;
+    const helpLineWidth = lineWidth - optionColumnWidth;
 
     {
       void trailingHelp(Group? group) {
@@ -259,17 +251,18 @@ class SmartArg {
           }
         }
 
-        var keyDisplay =
-            linePrefix + helpKeys[i].padRight(keyPadWidth - lineIndent);
+        var keyDisplay = linePrefix + helpKeys[i];
 
         var thisHelpDescriptions = helpDescriptions[i].join('\n');
-        thisHelpDescriptions =
-            hardWrap(thisHelpDescriptions, lineWidth - keyPadWidth);
-        thisHelpDescriptions = indent(thisHelpDescriptions, keyPadWidth);
+        thisHelpDescriptions = hardWrap(thisHelpDescriptions, helpLineWidth);
+        thisHelpDescriptions = indent(thisHelpDescriptions, optionColumnWidth);
 
-        if (keyDisplay.length == keyPadWidth) {
-          thisHelpDescriptions =
-              thisHelpDescriptions.replaceRange(0, keyPadWidth, keyDisplay);
+        if (keyDisplay.length <= optionColumnWidth) {
+          thisHelpDescriptions = thisHelpDescriptions.replaceRange(
+            0,
+            keyDisplay.length,
+            keyDisplay,
+          );
         } else {
           lines.add(keyDisplay);
         }
@@ -285,17 +278,23 @@ class SmartArg {
     if (commands.isNotEmpty) {
       lines.add('');
       lines.add('COMMANDS');
-
-      final maxCommandLength =
-          commands.fold(0, (int a, b) => max(a, b.displayKey!.length));
-
-      for (var mpp in commands) {
-        final key = mpp.displayKey!.padRight(maxCommandLength + 1);
-        final help = mpp.argument.help ?? '';
-        final displayString = '$key $help';
-
-        lines.add(indent(hardWrap(displayString, lineWidth), 2));
-      }
+      List<MirrorParameterPair>.from(commands)
+          .sortedBy((mpp) => mpp.displayKey!)
+          .forEach((mpp) {
+        final commandDisplay = '$linePrefix${mpp.displayKey!}';
+        var commandHelp = hardWrap(mpp.argument.help ?? '', helpLineWidth);
+        commandHelp = indent(commandHelp, optionColumnWidth);
+        if (commandDisplay.length <= optionColumnWidth) {
+          commandHelp = commandHelp.replaceRange(
+            0,
+            commandDisplay.length,
+            commandDisplay,
+          );
+        } else {
+          lines.add(commandDisplay);
+        }
+        lines.add(commandHelp);
+      });
     }
 
     if (_isNotNull(_app?.extendedHelp)) {
