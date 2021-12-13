@@ -222,10 +222,12 @@ class SmartArg {
       void trailingHelp(Group? group) {
         if (_isNotNull(group?.afterHelp)) {
           lines.add('');
-          lines.add(indent(
-            hardWrap(group!.afterHelp!, lineWidth - lineIndent),
-            lineIndent,
-          ),);
+          lines.add(
+            indent(
+              hardWrap(group!.afterHelp!, lineWidth - lineIndent),
+              lineIndent,
+            ),
+          );
         }
       }
 
@@ -244,9 +246,12 @@ class SmartArg {
           lines.add(thisGroup!.name);
 
           if (_isNotNull(thisGroup.beforeHelp)) {
-            lines.add(indent(
+            lines.add(
+              indent(
                 hardWrap(thisGroup.beforeHelp!, lineWidth - lineIndent),
-                lineIndent,),);
+                lineIndent,
+              ),
+            );
             lines.add('');
           }
         }
@@ -308,7 +313,8 @@ class SmartArg {
         if (_isNotNull(eh.header)) {
           lines.add(hardWrap(eh.header!, lineWidth));
           lines.add(
-              indent(hardWrap(eh.help!, lineWidth - lineIndent), lineIndent),);
+            indent(hardWrap(eh.help!, lineWidth - lineIndent), lineIndent),
+          );
         } else {
           lines.add(hardWrap(eh.help!, lineWidth));
         }
@@ -407,7 +413,8 @@ class SmartArg {
       if (argumentConfiguration!.argument.needsValue && !hasValueViaEqual) {
         if (argumentIndex >= expandedArguments.length) {
           throw ArgumentError(
-              '${argumentConfiguration.displayKey} expects a value but none was supplied.',);
+            '${argumentConfiguration.displayKey} expects a value but none was supplied.',
+          );
         }
 
         value = expandedArguments[argumentIndex];
@@ -454,13 +461,17 @@ class SmartArg {
         (instanceValue as List).add(value);
 
         instanceMirror.invokeSetter(
-            argumentConfiguration.mirror.simpleName, instanceValue,);
+          argumentConfiguration.mirror.simpleName,
+          instanceValue,
+        );
         _wasSet.add(argumentConfiguration.displayKey);
       } catch (_) {
         // Adding as a list failed, so it must not be a list. Let's set it
         // as a normal value.
         instanceMirror.invokeSetter(
-            argumentConfiguration.mirror.simpleName, value,);
+          argumentConfiguration.mirror.simpleName,
+          value,
+        );
         _wasSet.add(argumentConfiguration.displayKey);
       }
     } else {
@@ -479,13 +490,16 @@ class SmartArg {
       } catch (_) {
         if (_wasSet.contains(argumentConfiguration.displayKey)) {
           throw ArgumentError(
-              '${argumentConfiguration.displayKey} was supplied more than once',);
+            '${argumentConfiguration.displayKey} was supplied more than once',
+          );
         }
 
         // Adding as a list failed, so it must not be a list. Let's set it
         // as a normal value.
         instanceMirror.invokeSetter(
-            argumentConfiguration.mirror.simpleName, value,);
+          argumentConfiguration.mirror.simpleName,
+          value,
+        );
         _wasSet.add(argumentConfiguration.displayKey);
       }
     }
@@ -518,17 +532,20 @@ class SmartArg {
 
     if (isMissing.isNotEmpty) {
       throw ArgumentError(
-          'missing required arguments: ${isMissing.join(', ')}',);
+        'missing required arguments: ${isMissing.join(', ')}',
+      );
     }
 
     if (_isNotNull(_app!.minimumExtras) &&
         extras!.length < _app!.minimumExtras!) {
       throw ArgumentError(
-          'expecting at least ${_app!.minimumExtras} free form arguments but ${extras!.length} was supplied',);
+        'expecting at least ${_app!.minimumExtras} free form arguments but ${extras!.length} was supplied',
+      );
     } else if (_isNotNull(_app!.maximumExtras) &&
         extras!.length > _app!.maximumExtras!) {
       throw ArgumentError(
-          'expecting at most ${_app!.maximumExtras} free form arguments but ${extras!.length} was supplied',);
+        'expecting at most ${_app!.maximumExtras} free form arguments but ${extras!.length} was supplied',
+      );
     }
   }
 

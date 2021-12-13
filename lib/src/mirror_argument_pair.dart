@@ -61,10 +61,12 @@ class MirrorParameterPair {
       throw StateError('No key could be found for ${mirror.simpleName})');
     } else if (short?.startsWith('-') ?? false) {
       throw StateError(
-          'Short key ($short) defined by short: should not include a leading -',);
+        'Short key ($short) defined by short: should not include a leading -',
+      );
     } else if (long?.startsWith('-') ?? false) {
       throw StateError(
-          'Long key ($short) defined by long: should not include a leading -',);
+        'Long key ($short) defined by long: should not include a leading -',
+      );
     }
 
     return result;
