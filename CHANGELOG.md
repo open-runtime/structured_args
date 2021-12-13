@@ -5,6 +5,8 @@
         - Use a maximum of 80 columns
         - Keep a consistent Command/Argument column width of 25 (introducing a linebreak on overflow)
         - Sort commands by displayKey
+- Style:
+    - Updated linting rules to help enforce more consitency
 
 ## 2.1.0
 
