@@ -38,7 +38,7 @@ void main() {
             var _ =
                 arg.handleValue('dir', path.join('.', 'bad-directory-name'));
             fail(
-                'directory does not exist, an exception should have been thrown');
+                'directory does not exist, an exception should have been thrown',);
           } on ArgumentError {
             expect(1, 1);
           }

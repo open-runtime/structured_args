@@ -46,19 +46,19 @@ class TestSimpleCommand extends SmartArg {
   @override
   void beforeCommandParse(SmartArgCommand command, List<String> arguments) {
     super.beforeCommandParse(command, arguments);
-    hookOrder.add("beforeCommandParse");
+    hookOrder.add('beforeCommandParse');
   }
 
   @override
   void beforeCommandExecute(SmartArgCommand command) {
     super.beforeCommandExecute(command);
-    hookOrder.add("beforeCommandExecute");
+    hookOrder.add('beforeCommandExecute');
   }
 
   @override
   void afterCommandExecute(SmartArgCommand command) {
     super.afterCommandExecute(command);
-    hookOrder.add("afterCommandExecute");
+    hookOrder.add('afterCommandExecute');
   }
 }
 
@@ -76,25 +76,25 @@ class ChildCommand extends SmartArgCommand {
   @override
   void execute(SmartArg parentArguments) {
     whatExecuted = 'ChildCommand: $aValue';
-    subcommandHookOrder.add("ChildExecute");
+    subcommandHookOrder.add('ChildExecute');
   }
 
   @override
   void beforeCommandParse(SmartArgCommand command, List<String> arguments) {
     super.beforeCommandParse(command, arguments);
-    subcommandHookOrder.add("beforeChildParse");
+    subcommandHookOrder.add('beforeChildParse');
   }
 
   @override
   void beforeCommandExecute(SmartArgCommand command) {
     super.beforeCommandExecute(command);
-    subcommandHookOrder.add("beforeChildExecute");
+    subcommandHookOrder.add('beforeChildExecute');
   }
 
   @override
   void afterCommandExecute(SmartArgCommand command) {
     super.afterCommandExecute(command);
-    subcommandHookOrder.add("afterChildExecute");
+    subcommandHookOrder.add('afterChildExecute');
   }
 }
 
@@ -110,25 +110,25 @@ class FatherCommand extends SmartArgCommand {
   @override
   void execute(SmartArg parentArguments) {
     whatExecuted = 'FatherCommand: $aValue';
-    subcommandHookOrder.add("FatherExecute");
+    subcommandHookOrder.add('FatherExecute');
   }
 
   @override
   void beforeCommandParse(SmartArgCommand command, List<String> arguments) {
     super.beforeCommandParse(command, arguments);
-    subcommandHookOrder.add("beforeFatherParse");
+    subcommandHookOrder.add('beforeFatherParse');
   }
 
   @override
   void beforeCommandExecute(SmartArgCommand command) {
     super.beforeCommandExecute(command);
-    subcommandHookOrder.add("beforeFatherExecute");
+    subcommandHookOrder.add('beforeFatherExecute');
   }
 
   @override
   void afterCommandExecute(SmartArgCommand command) {
     super.afterCommandExecute(command);
-    subcommandHookOrder.add("afterFatherExecute");
+    subcommandHookOrder.add('afterFatherExecute');
   }
 }
 
@@ -147,19 +147,19 @@ class GrandFatherCommand extends SmartArg {
   @override
   void beforeCommandParse(SmartArgCommand command, List<String> arguments) {
     super.beforeCommandParse(command, arguments);
-    subcommandHookOrder.add("beforeGrandFatherParse");
+    subcommandHookOrder.add('beforeGrandFatherParse');
   }
 
   @override
   void beforeCommandExecute(SmartArgCommand command) {
     super.beforeCommandExecute(command);
-    subcommandHookOrder.add("beforeGrandFatherExecute");
+    subcommandHookOrder.add('beforeGrandFatherExecute');
   }
 
   @override
   void afterCommandExecute(SmartArgCommand command) {
     super.afterCommandExecute(command);
-    subcommandHookOrder.add("afterGrandFatherExecute");
+    subcommandHookOrder.add('afterGrandFatherExecute');
   }
 }
 
@@ -178,9 +178,9 @@ void main() {
         expect(args.verbose, null);
         expect(whatExecuted, 'get-command: download.txt');
         expect(cmd.hookOrder, [
-          "beforeCommandParse",
-          "beforeCommandExecute",
-          "afterCommandExecute"
+          'beforeCommandParse',
+          'beforeCommandExecute',
+          'afterCommandExecute'
         ]);
       });
 

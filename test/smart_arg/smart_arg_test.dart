@@ -448,7 +448,7 @@ void main() {
         try {
           var _ = TestMultiple()..parse(['--name=John', '--name=Jack']);
           fail(
-              'supplying multiple parameters when allowMultiple = null should have thrown an exception');
+              'supplying multiple parameters when allowMultiple = null should have thrown an exception',);
         } on ArgumentError {
           expect(1, 1);
         }
@@ -486,7 +486,7 @@ void main() {
       try {
         var _ = TestSimple().parse(['--dvalue=5.5', '--dvalue=5.5']);
         fail(
-            'same argument supplied multiple times did not thrown an exception');
+            'same argument supplied multiple times did not thrown an exception',);
       } on ArgumentError catch (e) {
         expect(e.toString(), contains('more than once'));
       }
@@ -635,7 +635,7 @@ void main() {
           var _ = TestArgumentTerminatorNull()
             ..parse(['--name=John', '--', '--other=Jack', 'Doe']);
           fail(
-              'null argument terminator and -- should have thrown an exception');
+              'null argument terminator and -- should have thrown an exception',);
         } on ArgumentError {
           expect(1, 1);
         }
@@ -918,7 +918,7 @@ void main() {
       final String help = args.usage();
 
       expect(help,
-          contains('A boolean value, added via the ChildExtension class'));
+          contains('A boolean value, added via the ChildExtension class'),);
       expect(help, contains('A string value, added via the StringMixin class'));
       expect(help, contains('A double value, added via the DoubleMixin class'));
       expect(help, contains('A integer value, added via the BaseArg class'));

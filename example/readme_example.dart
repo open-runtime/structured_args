@@ -10,7 +10,7 @@ class Args extends SmartArg {
   @StringArgument(
     help: 'Name of person to say hello to',
     //Environment Variable will be used if defined and not otherwise specified
-    environmentVariable: "GREETING_NAME",
+    environmentVariable: 'GREETING_NAME',
   )
   String name = 'World'; // Default to World
 

@@ -68,8 +68,10 @@ class PutCommand extends SmartArgCommand {
 @Parser(
   description: 'Example using commands',
   extendedHelp: [
-    ExtendedHelp('This is some text below the command listing',
-        header: 'EXTENDED HELP')
+    ExtendedHelp(
+      'This is some text below the command listing',
+      header: 'EXTENDED HELP',
+    )
   ],
 )
 class Args extends SmartArg {

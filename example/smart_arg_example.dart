@@ -11,7 +11,8 @@ import 'smart_arg_example.reflectable.dart';
   maximumExtras: 1,
   exitOnFailure: true,
   extendedHelp: [
-    ExtendedHelp('''
+    ExtendedHelp(
+      '''
       This is a simple application that does nothing and contains silly arguments. It simply shows
       how the
       smart_arg library can be used.
@@ -19,7 +20,8 @@ import 'smart_arg_example.reflectable.dart';
       No one should really try to use this
       program outside of those interested
       in using smart_arg in their own
-      applications.'''),
+      applications.''',
+    ),
     ExtendedHelp(
       'This is more extended text that can be put into its own section.',
       header: 'SECTION 2',
