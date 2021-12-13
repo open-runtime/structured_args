@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:smart_arg/smart_arg.dart';
+import 'package:smart_arg_fork/smart_arg_fork.dart';
 
 import 'smart_arg_example.reflectable.dart';
 

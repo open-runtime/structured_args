@@ -1,4 +1,4 @@
-library smart_arg;
+library smart_arg_fork;
 
 export 'src/argument.dart';
 export 'src/boolean_argument.dart';

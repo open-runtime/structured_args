@@ -1,9 +1,8 @@
 Smart Arg
 =========
 
-[![Build Status](https://travis-ci.org/jcowgar/smart_arg.svg?branch=master)](https://travis-ci.org/jcowgar/smart_arg)
-[![codecov](https://codecov.io/gh/jcowgar/smart_arg/branch/master/graph/badge.svg)](https://codecov.io/gh/jcowgar/smart_arg)
-[![Pub](https://img.shields.io/pub/v/smart_arg.svg)](https://pub.dartlang.org/packages/smart_arg)
+[![CircleCI](https://circleci.com/gh/axrs/smart_arg/tree/master-forked.svg?style=svg)](https://circleci.com/gh/axrs/smart_arg/?branch=master-forked)
+[![Pub](https://img.shields.io/pub/v/smart_arg_fork.svg)](https://pub.dartlang.org/packages/smart_arg_fork)
 
 A source generated, simple to use command line argument parser. The main
 rationale behind this argument parser is the use of a class to store the
@@ -31,7 +30,7 @@ incorrect parameter or misses a required parameter or extra.
 ```dart
 import 'dart:io';
 
-import 'package:smart_arg/smart_arg.dart';
+import 'package:smart_arg_fork/smart_arg_fork.dart';
 
 import 'readme_example.reflectable.dart';
 
@@ -184,7 +183,7 @@ then also have options of their own. `SmartArg` accomplishes this very easily:
 ```dart
 import 'dart:io';
 
-import 'package:smart_arg/smart_arg.dart';
+import 'package:smart_arg_fork/smart_arg_fork.dart';
 
 import 'command_example.reflectable.dart';
 
@@ -294,7 +293,7 @@ definitions between multiple commands. Just remember to annotate each `mixin` wi
 ```dart
 import 'dart:io';
 
-import 'package:smart_arg/smart_arg.dart';
+import 'package:smart_arg_fork/smart_arg_fork.dart';
 
 import 'advanced_command_example.reflectable.dart';
 
