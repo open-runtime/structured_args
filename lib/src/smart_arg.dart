@@ -257,7 +257,7 @@ class SmartArg {
         thisHelpDescriptions = hardWrap(thisHelpDescriptions, helpLineWidth);
         thisHelpDescriptions = indent(thisHelpDescriptions, optionColumnWidth);
 
-        if (keyDisplay.length <= optionColumnWidth) {
+        if (keyDisplay.length <= optionColumnWidth - 1) {
           thisHelpDescriptions = thisHelpDescriptions.replaceRange(
             0,
             keyDisplay.length,
@@ -284,7 +284,7 @@ class SmartArg {
         final commandDisplay = '$linePrefix${mpp.displayKey!}';
         var commandHelp = hardWrap(mpp.argument.help ?? '', helpLineWidth);
         commandHelp = indent(commandHelp, optionColumnWidth);
-        if (commandDisplay.length <= optionColumnWidth) {
+        if (commandDisplay.length <= optionColumnWidth - 1) {
           commandHelp = commandHelp.replaceRange(
             0,
             commandDisplay.length,
