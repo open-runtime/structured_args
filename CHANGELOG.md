@@ -1,4 +1,4 @@
-## 2.1.1 [Unreleased]
+## 2.1.1
 
 - Fixed:
     - Changed Help output to:
