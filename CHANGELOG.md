@@ -1,3 +1,8 @@
+## 2.2.0
+
+- Added:
+    - Help text for `Command`s can be specified as either `@Command(help: '')` or within the implementations `@Parser(description: '')`.
+
 ## 2.1.1
 
 - Fixed:

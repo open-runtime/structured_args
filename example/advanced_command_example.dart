@@ -57,10 +57,10 @@ class Args extends SmartArg with HelpArg {
   @BooleanArgument(short: 'v', help: 'Verbose mode')
   bool? verbose;
 
-  @Command(help: 'Pulls a Docker Image')
+  @Command()
   DockerPullCommand? pull;
 
-  @Command(help: 'Runs a Docker Image')
+  @Command()
   DockerRunCommand? run;
 }
 

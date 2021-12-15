@@ -18,7 +18,7 @@ class PutCommand extends SmartArgCommand {
 }
 
 @SmartArg.reflectable
-@Parser(exitOnFailure: false, description: 'get command')
+@Parser(exitOnFailure: false, description: 'Get a file from a remote host')
 class GetCommand extends SmartArgCommand {
   @StringArgument()
   String? filename;
@@ -38,7 +38,7 @@ class TestSimpleCommand extends SmartArg {
   @Command(help: 'Put a file on a remote host')
   PutCommand? put;
 
-  @Command(help: 'Get a file from a remote host')
+  @Command()
   GetCommand? get;
 
   List<String> hookOrder = [];
@@ -210,8 +210,8 @@ void main() {
         expect(help.contains('COMMANDS'), true);
         expect(help.contains('  get'), true);
         expect(help.contains('  put'), true);
-        expect(help.contains('Get a file'), true);
-        expect(help.contains('Put a file'), true);
+        expect(help.contains('Get a file'), true); //From Parser description
+        expect(help.contains('Put a file'), true); //From Command.Help
       });
     });
 
