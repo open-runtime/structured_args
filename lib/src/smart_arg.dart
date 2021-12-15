@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:collection/collection.dart' show IterableExtension;
 import 'package:reflectable/reflectable.dart';
+import 'package:smart_arg/src/predicates.dart';
 
 import 'argument.dart';
 import 'command.dart';
@@ -12,17 +13,6 @@ import 'parser.dart';
 import 'reflector.dart';
 import 'smart_arg_command.dart';
 import 'string_utils.dart';
-
-bool _isFalse(dynamic value) => value == false;
-
-bool _isTrue(dynamic value) => value == true;
-
-bool _isNull(dynamic value) => value == null;
-
-bool _isNotNull(dynamic value) => _isFalse(_isNull(value));
-
-bool _isNotBlank(String? value) =>
-    _isNotNull(value) && value!.trim().isNotEmpty;
 
 class ParsedResult {
   final MirrorParameterPair? command;
@@ -98,13 +88,13 @@ class SmartArg {
       // with @SmartArg.reflectable
     }
     List<DeclarationMirror> mirrors = [];
-    if (_isNotNull(superMirror)) {
+    if (isNotNull(superMirror)) {
       mirrors = _walkDeclarations(superMirror!);
     }
     var classVals = classMirror.declarations.values;
     return [classVals, mirrors]
         .expand((e) => e)
-        .where((p) => p is VariableMirror && _isFalse(p.isPrivate))
+        .where((p) => p is VariableMirror && isFalse(p.isPrivate))
         .toList();
   }
 
@@ -162,13 +152,13 @@ class SmartArg {
 
     try {
       final ParsedResult result = _parse(arguments);
-      if (_isNotNull(result.command)) {
+      if (isNotNull(result.command)) {
         _launchCommand(result.command!, result.commandArguments ?? []);
       } else if (result.success) {
         _validate();
       }
     } on ArgumentError catch (e) {
-      if (_isTrue(_app?.exitOnFailure)) {
+      if (isTrue(_app?.exitOnFailure)) {
         print(e.toString());
         print('');
         print(usage());
@@ -183,7 +173,7 @@ class SmartArg {
   String usage() {
     List<String?> lines = [];
 
-    if (_isNotNull(_app?.description)) {
+    if (isNotNull(_app?.description)) {
       lines.add(_app!.description);
       lines.add('');
     }
@@ -193,7 +183,7 @@ class SmartArg {
     List<List<String>> helpDescriptions = [];
 
     final arguments =
-        _mirrorParameterPairs.where((v) => _isFalse(v.argument is Command));
+        _mirrorParameterPairs.where((v) => isFalse(v.argument is Command));
     final commands = _mirrorParameterPairs.where((v) => v.argument is Command);
 
     if (arguments.isNotEmpty) {
@@ -211,7 +201,7 @@ class SmartArg {
         }
 
         String? envVar = mpp.argument.environmentVariable;
-        if (_isNotBlank(envVar)) {
+        if (isNotBlank(envVar)) {
           helpLines.add('[Environment Variable: \$$envVar]');
         }
 
@@ -228,7 +218,7 @@ class SmartArg {
 
     {
       void trailingHelp(Group? group) {
-        if (_isNotNull(group?.afterHelp)) {
+        if (isNotNull(group?.afterHelp)) {
           lines.add('');
           lines.add(
             indent(
@@ -247,13 +237,13 @@ class SmartArg {
         if (thisGroup != currentGroup) {
           trailingHelp(currentGroup);
 
-          if (_isNotNull(currentGroup)) {
+          if (isNotNull(currentGroup)) {
             lines.add('');
           }
 
           lines.add(thisGroup!.name);
 
-          if (_isNotNull(thisGroup.beforeHelp)) {
+          if (isNotNull(thisGroup.beforeHelp)) {
             lines.add(
               indent(
                 hardWrap(thisGroup.beforeHelp!, lineWidth - lineIndent),
@@ -314,15 +304,15 @@ class SmartArg {
       });
     }
 
-    if (_isNotNull(_app?.extendedHelp)) {
+    if (isNotNull(_app?.extendedHelp)) {
       for (final eh in _app!.extendedHelp!) {
-        if (_isNull(eh.help)) {
+        if (isNull(eh.help)) {
           throw StateError('Help.help must be set');
         }
 
         lines.add('');
 
-        if (_isNotNull(eh.header)) {
+        if (isNotNull(eh.header)) {
           lines.add(hardWrap(eh.header!, lineWidth));
           lines.add(
             indent(hardWrap(eh.help!, lineWidth - lineIndent), lineIndent),
@@ -386,7 +376,7 @@ class SmartArg {
       if (argument.toLowerCase() == _app!.argumentTerminator?.toLowerCase()) {
         _extras!.addAll(expandedArguments.skip(argumentIndex));
         return ParsedResult.success();
-      } else if (_isFalse(argument.startsWith('-'))) {
+      } else if (isFalse(argument.startsWith('-'))) {
         if (_commands.containsKey(argument)) {
           final command = _commands[argument]!;
           final commandArguments = arguments.skip(argumentIndex).toList();
@@ -398,7 +388,7 @@ class SmartArg {
           // Was not an argument, must be an extra
           _extras!.add(argument);
 
-          if (_isFalse(_app!.allowTrailingArguments)) {
+          if (isFalse(_app!.allowTrailingArguments)) {
             _extras!.addAll(expandedArguments.skip(argumentIndex));
             return ParsedResult.success();
           }
@@ -418,7 +408,7 @@ class SmartArg {
 
       // Find our argument configuration
       var argumentConfiguration = _values[argumentName];
-      if (_isNull(argumentConfiguration)) {
+      if (isNull(argumentConfiguration)) {
         throw ArgumentError('$originalArgument is invalid');
       }
 
@@ -467,7 +457,7 @@ class SmartArg {
     // There is no way of determining if a class variable is a list or not through
     // introspection, therefore we try to add the value as a list, or append to the
     // list first. If that fails, we assume it is not a list :-/
-    if (_isNull(instanceValue)) {
+    if (isNull(instanceValue)) {
       try {
         instanceValue = (argumentConfiguration.argument as dynamic).emptyList;
         (instanceValue as List).add(value);
@@ -529,15 +519,15 @@ class SmartArg {
     for (var mpp in _mirrorParameterPairs) {
       var argumentName = mpp.displayKey;
       final String? envVar = mpp.argument.environmentVariable;
-      if (_isFalse(_argumentWasSet(argumentName)) && _isNotBlank(envVar)) {
+      if (isFalse(_argumentWasSet(argumentName)) && isNotBlank(envVar)) {
         String? envVarValue = _environment[envVar];
-        if (_isNotBlank(envVarValue)) {
+        if (isNotBlank(envVarValue)) {
           _trySetValue(instanceMirror, argumentName, envVarValue!.trim());
         }
       }
 
-      if (_isTrue(mpp.argument.isRequired) &&
-          _isFalse(_argumentWasSet(argumentName))) {
+      if (isTrue(mpp.argument.isRequired) &&
+          isFalse(_argumentWasSet(argumentName))) {
         isMissing.add(mpp.displayKey);
       }
     }
@@ -548,12 +538,12 @@ class SmartArg {
       );
     }
 
-    if (_isNotNull(_app!.minimumExtras) &&
+    if (isNotNull(_app!.minimumExtras) &&
         extras!.length < _app!.minimumExtras!) {
       throw ArgumentError(
         'expecting at least ${_app!.minimumExtras} free form arguments but ${extras!.length} was supplied',
       );
-    } else if (_isNotNull(_app!.maximumExtras) &&
+    } else if (isNotNull(_app!.maximumExtras) &&
         extras!.length > _app!.maximumExtras!) {
       throw ArgumentError(
         'expecting at most ${_app!.maximumExtras} free form arguments but ${extras!.length} was supplied',
@@ -572,7 +562,7 @@ class SmartArg {
     command.parse(arguments);
 
     if (arguments.isEmpty ||
-        _isFalse(subcommands.containsKey(arguments.first))) {
+        isFalse(subcommands.containsKey(arguments.first))) {
       beforeCommandExecute(command);
       command.execute(this);
     }
