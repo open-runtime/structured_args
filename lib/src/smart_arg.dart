@@ -42,6 +42,14 @@ class ParsedResult {
         commandArguments = null;
 }
 
+String? _argumentHelp(final MirrorParameterPair mpp) {
+  return mpp.argument.help ??
+      (mpp.mirror.type.metadata
+                  .firstWhereOrNull((element) => element.runtimeType == Parser)
+              as Parser?)
+          ?.description;
+}
+
 // Local type is needed for strict type checking in lists.
 // var abc = [] turns out to be a List<dynamic> which is not
 // as safe as List<String> abc = [] for example.
@@ -286,8 +294,12 @@ class SmartArg {
       List<MirrorParameterPair>.from(commands)
           .sortedBy((mpp) => mpp.displayKey!)
           .forEach((mpp) {
+        final String? help = _argumentHelp(mpp);
         final commandDisplay = '$linePrefix${mpp.displayKey!}';
-        var commandHelp = hardWrap(mpp.argument.help ?? '', helpLineWidth);
+        var commandHelp = hardWrap(
+          help ?? '',
+          helpLineWidth,
+        );
         commandHelp = indent(commandHelp, optionColumnWidth);
         if (commandDisplay.length <= optionColumnWidth - 1) {
           commandHelp = commandHelp.replaceRange(

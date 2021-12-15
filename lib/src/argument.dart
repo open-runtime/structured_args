@@ -26,6 +26,8 @@ abstract class Argument {
   final dynamic long;
 
   /// Description of the property to be used in the help output.
+  /// If not specified, [SmartArg] will attempt to use reflection to obtain the
+  /// [Parser.description] field instead.
   final String? help;
 
   /// Is this option required?
