@@ -1,6 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:recase/recase.dart';
-import 'package:smart_arg/src/predicates.dart';
+import 'package:smart_arg_fork/src/predicates.dart';
 
 import 'argument.dart';
 
