@@ -1,3 +1,8 @@
+## 2.3.0
+
+- Added:
+    - Support for parsing and validating `@EnumArgument`s
+
 ## 2.2.0
 
 - Added:

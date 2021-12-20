@@ -49,6 +49,24 @@ class DockerRunCommand extends SmartArgCommand with HelpArg, DockerImageArg {
   }
 }
 
+enum Status { running, stopped, all }
+
+@SmartArg.reflectable
+@Parser(description: 'Lists Docker Images')
+class DockerListCommand extends SmartArgCommand with HelpArg, DockerImageArg {
+  @EnumArgument<Status>(
+    help: 'Docker Image Status',
+    values: Status.values,
+  )
+  late Status status = Status.all;
+
+  @override
+  void execute(SmartArg parentArguments) {
+    printUsageAndExitIfHelpRequested();
+    print('\$ docker ps --status $status');
+  }
+}
+
 @SmartArg.reflectable
 @Parser(
   description: 'Example of using mixins to reduce argument declarations',
@@ -62,6 +80,9 @@ class Args extends SmartArg with HelpArg {
 
   @Command()
   DockerRunCommand? run;
+
+  @Command()
+  DockerListCommand? list;
 }
 
 void main(List<String> arguments) {

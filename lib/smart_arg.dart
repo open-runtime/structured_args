@@ -5,6 +5,7 @@ export 'src/boolean_argument.dart';
 export 'src/command.dart';
 export 'src/directory_argument.dart';
 export 'src/double_argument.dart';
+export 'src/enum_argument.dart';
 export 'src/extended_help.dart';
 export 'src/file_argument.dart';
 export 'src/group.dart';
