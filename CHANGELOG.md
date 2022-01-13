@@ -1,3 +1,8 @@
+## 2.4.0
+
+- Added:
+  - Support for using extended classes of `SmartArg` to be added as `@Command`s to other `SmartArg` classes.
+
 ## 2.3.0
 
 - Added:

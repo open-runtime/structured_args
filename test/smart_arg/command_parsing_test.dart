@@ -44,7 +44,7 @@ class TestSimpleCommand extends SmartArg {
   List<String> hookOrder = [];
 
   @override
-  void beforeCommandParse(SmartArgCommand command, List<String> arguments) {
+  void beforeCommandParse(SmartArg command, List<String> arguments) {
     super.beforeCommandParse(command, arguments);
     hookOrder.add('beforeCommandParse');
   }
@@ -80,7 +80,7 @@ class ChildCommand extends SmartArgCommand {
   }
 
   @override
-  void beforeCommandParse(SmartArgCommand command, List<String> arguments) {
+  void beforeCommandParse(SmartArg command, List<String> arguments) {
     super.beforeCommandParse(command, arguments);
     subcommandHookOrder.add('beforeChildParse');
   }
@@ -114,7 +114,7 @@ class FatherCommand extends SmartArgCommand {
   }
 
   @override
-  void beforeCommandParse(SmartArgCommand command, List<String> arguments) {
+  void beforeCommandParse(SmartArg command, List<String> arguments) {
     super.beforeCommandParse(command, arguments);
     subcommandHookOrder.add('beforeFatherParse');
   }
@@ -144,8 +144,11 @@ class GrandFatherCommand extends SmartArg {
   @StringArgument()
   String? aValue;
 
+  @Command()
+  late GrandFatherCommand grandFather;
+
   @override
-  void beforeCommandParse(SmartArgCommand command, List<String> arguments) {
+  void beforeCommandParse(SmartArg command, List<String> arguments) {
     super.beforeCommandParse(command, arguments);
     subcommandHookOrder.add('beforeGrandFatherParse');
   }
@@ -264,7 +267,7 @@ void main() {
         ]);
       });
 
-      test('Arguments beyond commands are excuted as the last known command',
+      test('Arguments beyond commands are executed as the last known command',
           () {
         GrandFatherCommand().parse(['father', 'child']);
         expect(whatExecuted, 'ChildCommand: null');
@@ -275,6 +278,19 @@ void main() {
           'beforeFatherExecute',
           'ChildExecute',
           'afterFatherExecute',
+          'afterGrandFatherExecute'
+        ]);
+      });
+
+      test('Nested SmartArg as Command', () {
+        GrandFatherCommand()
+            .parse(['grand-father', 'father', '--a-value=beta']);
+        expect(whatExecuted, 'FatherCommand: beta');
+        expect(subcommandHookOrder, [
+          'beforeGrandFatherParse',
+          'beforeGrandFatherParse',
+          'beforeGrandFatherExecute',
+          'FatherExecute',
           'afterGrandFatherExecute'
         ]);
       });

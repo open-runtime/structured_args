@@ -554,20 +554,23 @@ class SmartArg {
   void _launchCommand(MirrorParameterPair commandMpp, List<String> arguments) {
     final a = commandMpp.mirror;
     final b = a.type as ClassMirror;
-    final command = b.newInstance('', []) as SmartArgCommand;
+    final command = b.newInstance('', []) as SmartArg;
     command.parent = this;
     final subcommands = command._commands;
 
     beforeCommandParse(command, arguments);
     command.parse(arguments);
+    afterCommandParse(command, arguments);
 
-    if (arguments.isEmpty ||
-        isFalse(subcommands.containsKey(arguments.first))) {
-      beforeCommandExecute(command);
-      command.execute(this);
+    if (command is SmartArgCommand) {
+      //Process as an actual command
+      if (arguments.isEmpty ||
+          isFalse(subcommands.containsKey(arguments.first))) {
+        beforeCommandExecute(command);
+        command.execute(this);
+      }
+      afterCommandExecute(command);
     }
-
-    afterCommandExecute(command);
   }
 
   void _resetParser() {
@@ -580,16 +583,19 @@ class SmartArg {
     _environment = environment;
   }
 
-  /// Invoked before a command is parsed
-  void beforeCommandParse(SmartArgCommand command, List<String> arguments) {}
+  /// Invoked before an annotated [Command] parsing has started.
+  void beforeCommandParse(SmartArg command, List<String> arguments) {}
 
-  /// Invoked before a command is executed
+  /// Invoked after the [Command] parsing has completed.
+  void afterCommandParse(SmartArg command, List<String> arguments) {}
+
+  /// Invoked before a [SmartArgCommand] is executed
   void beforeCommandExecute(SmartArgCommand command) {
     if (this is SmartArgCommand) {
       parent?.beforeCommandExecute(this as SmartArgCommand);
     }
   }
 
-  /// Invoked after a command is executed
+  /// Invoked after a [SmartArgCommand] is executed
   void afterCommandExecute(SmartArgCommand command) {}
 }
