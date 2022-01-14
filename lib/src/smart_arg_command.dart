@@ -1,5 +1,5 @@
 import 'smart_arg.dart';
 
 abstract class SmartArgCommand extends SmartArg {
-  void execute(SmartArg parentArguments);
+  Future<void> execute(SmartArg parentArguments);
 }

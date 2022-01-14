@@ -12,7 +12,7 @@ class PutCommand extends SmartArgCommand {
   String? filename;
 
   @override
-  void execute(SmartArg parentArguments) {
+  Future<void> execute(SmartArg parentArguments) async {
     whatExecuted = 'put-command: $filename';
   }
 }
@@ -24,7 +24,7 @@ class GetCommand extends SmartArgCommand {
   String? filename;
 
   @override
-  void execute(SmartArg parentArguments) {
+  Future<void> execute(SmartArg parentArguments) async {
     whatExecuted = 'get-command: $filename';
   }
 }
@@ -74,7 +74,7 @@ class ChildCommand extends SmartArgCommand {
   late ChildCommand child;
 
   @override
-  void execute(SmartArg parentArguments) {
+  Future<void> execute(SmartArg parentArguments) async {
     whatExecuted = 'ChildCommand: $aValue';
     subcommandHookOrder.add('ChildExecute');
   }
@@ -108,7 +108,7 @@ class FatherCommand extends SmartArgCommand {
   late ChildCommand child;
 
   @override
-  void execute(SmartArg parentArguments) {
+  Future<void> execute(SmartArg parentArguments) async {
     whatExecuted = 'FatherCommand: $aValue';
     subcommandHookOrder.add('FatherExecute');
   }
@@ -175,10 +175,10 @@ void main() {
         whatExecuted = null;
       });
 
-      test('calls hooks', () {
+      test('calls hooks', () async {
         var cmd = TestSimpleCommand();
-        final args = cmd..parse(['get', '--filename=download.txt']);
-        expect(args.verbose, null);
+        await cmd.parse(['get', '--filename=download.txt']);
+        expect(cmd.verbose, null);
         expect(whatExecuted, 'get-command: download.txt');
         expect(cmd.hookOrder, [
           'beforeCommandParse',
@@ -187,21 +187,22 @@ void main() {
         ]);
       });
 
-      test('executes with no arguments', () {
-        final args = TestSimpleCommand()..parse([]);
+      test('executes with no arguments', () async {
+        final args = TestSimpleCommand();
+        await args.parse([]);
         expect(args.verbose, null);
       });
 
-      test('executes with a command', () {
-        final args = TestSimpleCommand()
-          ..parse(['-v', 'put', '--filename=upload.txt']);
+      test('executes with a command', () async {
+        final args = TestSimpleCommand();
+        await args.parse(['-v', 'put', '--filename=upload.txt']);
         expect(args.verbose, true);
         expect(whatExecuted, 'put-command: upload.txt');
       });
 
-      test('executes with another command', () {
-        final args = TestSimpleCommand()
-          ..parse(['-v', 'get', '--filename=download.txt']);
+      test('executes with another command', () async {
+        final args = TestSimpleCommand();
+        await args.parse(['-v', 'get', '--filename=download.txt']);
         expect(args.verbose, true);
         expect(whatExecuted, 'get-command: download.txt');
       });
@@ -224,8 +225,8 @@ void main() {
         subcommandHookOrder = [];
       });
 
-      test('First Subcommand', () {
-        GrandFatherCommand().parse(['father', '--a-value=beta']);
+      test('First Subcommand', () async {
+        await GrandFatherCommand().parse(['father', '--a-value=beta']);
         expect(whatExecuted, 'FatherCommand: beta');
         expect(subcommandHookOrder, [
           'beforeGrandFatherParse',
@@ -235,8 +236,9 @@ void main() {
         ]);
       });
 
-      test('Second subcommand', () {
-        GrandFatherCommand().parse(['father', 'child', '--a-value=charlie']);
+      test('Second subcommand', () async {
+        await GrandFatherCommand()
+            .parse(['father', 'child', '--a-value=charlie']);
         expect(whatExecuted, 'ChildCommand: charlie');
         expect(subcommandHookOrder, [
           'beforeGrandFatherParse',
@@ -249,8 +251,8 @@ void main() {
         ]);
       });
 
-      test('Triply Nested subcommand', () {
-        GrandFatherCommand()
+      test('Triply Nested subcommand', () async {
+        await GrandFatherCommand()
             .parse(['father', 'child', 'child', '--a-value=delta']);
         expect(whatExecuted, 'ChildCommand: delta');
         expect(subcommandHookOrder, [
@@ -268,8 +270,8 @@ void main() {
       });
 
       test('Arguments beyond commands are executed as the last known command',
-          () {
-        GrandFatherCommand().parse(['father', 'child']);
+          () async {
+        await GrandFatherCommand().parse(['father', 'child']);
         expect(whatExecuted, 'ChildCommand: null');
         expect(subcommandHookOrder, [
           'beforeGrandFatherParse',
@@ -282,8 +284,8 @@ void main() {
         ]);
       });
 
-      test('Nested SmartArg as Command', () {
-        GrandFatherCommand()
+      test('Nested SmartArg as Command', () async {
+        await GrandFatherCommand()
             .parse(['grand-father', 'father', '--a-value=beta']);
         expect(whatExecuted, 'FatherCommand: beta');
         expect(subcommandHookOrder, [

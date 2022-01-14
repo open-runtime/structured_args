@@ -147,13 +147,13 @@ class SmartArg {
   /// `exit(1)` if there is a command line parsing error. It will do so only
   /// after telling the user what the error was and displaying the result of
   /// [usage()].
-  void parse(List<String> arguments) {
+  Future<void> parse(List<String> arguments) async {
     _resetParser();
 
     try {
       final ParsedResult result = _parse(arguments);
       if (isNotNull(result.command)) {
-        _launchCommand(result.command!, result.commandArguments ?? []);
+        await _launchCommand(result.command!, result.commandArguments ?? []);
       } else if (result.success) {
         _validate();
       }
@@ -551,7 +551,10 @@ class SmartArg {
     }
   }
 
-  void _launchCommand(MirrorParameterPair commandMpp, List<String> arguments) {
+  Future<void> _launchCommand(
+    MirrorParameterPair commandMpp,
+    List<String> arguments,
+  ) async {
     final a = commandMpp.mirror;
     final b = a.type as ClassMirror;
     final command = b.newInstance('', []) as SmartArg;
@@ -559,7 +562,7 @@ class SmartArg {
     final subcommands = command._commands;
 
     beforeCommandParse(command, arguments);
-    command.parse(arguments);
+    await command.parse(arguments);
     afterCommandParse(command, arguments);
 
     if (command is SmartArgCommand) {
@@ -567,7 +570,7 @@ class SmartArg {
       if (arguments.isEmpty ||
           isFalse(subcommands.containsKey(arguments.first))) {
         beforeCommandExecute(command);
-        command.execute(this);
+        await command.execute(this);
       }
       afterCommandExecute(command);
     }

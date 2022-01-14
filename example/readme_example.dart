@@ -34,10 +34,11 @@ class Args extends SmartArg {
   bool help = false;
 }
 
-void main(List<String> arguments) {
+void main(List<String> arguments) async {
   initializeReflectable();
 
-  var args = Args()..parse(arguments);
+  var args = Args();
+  await args.parse(arguments);
   if (args.help) {
     print(args.usage());
     exit(0);

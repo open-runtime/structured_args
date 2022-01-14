@@ -14,7 +14,7 @@ class GetCommand extends SmartArgCommand {
   bool? help;
 
   @override
-  void execute(SmartArg parentArguments) {
+  Future<void> execute(SmartArg parentArguments) async {
     if (help == true) {
       print(usage());
       exit(0);
@@ -44,7 +44,7 @@ class PutCommand extends SmartArgCommand {
   bool? help;
 
   @override
-  void execute(SmartArg parentArguments) {
+  Future<void> execute(SmartArg parentArguments) async {
     if (help == true) {
       print(usage());
       exit(0);
@@ -88,10 +88,11 @@ class Args extends SmartArg {
   bool? help;
 }
 
-void main(List<String> arguments) {
+void main(List<String> arguments) async {
   initializeReflectable();
 
-  var args = Args()..parse(arguments);
+  var args = Args();
+  await args.parse(arguments);
 
   if (args.help == true) {
     print(args.usage());

@@ -30,7 +30,7 @@ mixin DockerImageArg {
 @Parser(description: 'Pulls a Docker Image')
 class DockerPullCommand extends SmartArgCommand with HelpArg, DockerImageArg {
   @override
-  void execute(SmartArg parentArguments) {
+  Future<void> execute(SmartArg parentArguments) async {
     printUsageAndExitIfHelpRequested();
     print('\$ docker pull $image');
   }
@@ -43,7 +43,7 @@ class DockerRunCommand extends SmartArgCommand with HelpArg, DockerImageArg {
   bool pull = false;
 
   @override
-  void execute(SmartArg parentArguments) {
+  Future<void> execute(SmartArg parentArguments) async {
     printUsageAndExitIfHelpRequested();
     print('\$ docker run${pull ? ' --pull' : ''} $image');
   }
@@ -61,7 +61,7 @@ class DockerListCommand extends SmartArgCommand with HelpArg, DockerImageArg {
   late Status status = Status.all;
 
   @override
-  void execute(SmartArg parentArguments) {
+  Future<void> execute(SmartArg parentArguments) async {
     printUsageAndExitIfHelpRequested();
     print('\$ docker ps --status $status');
   }
@@ -85,8 +85,9 @@ class Args extends SmartArg with HelpArg {
   DockerListCommand? list;
 }
 
-void main(List<String> arguments) {
+void main(List<String> arguments) async {
   initializeReflectable();
-  var args = Args()..parse(arguments);
+  var args = Args();
+  await args.parse(arguments);
   args.printUsageAndExitIfHelpRequested();
 }

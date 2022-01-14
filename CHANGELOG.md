@@ -1,3 +1,8 @@
+## 3.0.0
+
+- Breaking:
+  - Converted `SmartArg.parse` and `SmartArgCommand.execute` to be async
+
 ## 2.4.0
 
 - Added:

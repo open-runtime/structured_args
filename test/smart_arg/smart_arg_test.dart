@@ -322,25 +322,25 @@ void main() {
   initializeReflectable();
 
   group('argument parsing/assignment', () {
-    test('basic arguments', () {
-      final args = TestSimple()
-        ..parse([
-          '--bvalue',
-          '--ivalue',
-          '500',
-          '--dvalue',
-          '12.625',
-          '--svalue',
-          'hello',
-          '--fvalue',
-          'hello.txt',
-          '--dirvalue',
-          '.',
-          '--checking-camel-to-dash',
-          'yes-it-works',
-          'extra1',
-          'extra2',
-        ]);
+    test('basic arguments', () async {
+      final args = TestSimple();
+      await args.parse([
+        '--bvalue',
+        '--ivalue',
+        '500',
+        '--dvalue',
+        '12.625',
+        '--svalue',
+        'hello',
+        '--fvalue',
+        'hello.txt',
+        '--dirvalue',
+        '.',
+        '--checking-camel-to-dash',
+        'yes-it-works',
+        'extra1',
+        'extra2',
+      ]);
 
       expect(args.bvalue, true);
       expect(args.ivalue, 500);
@@ -352,29 +352,32 @@ void main() {
       expect(args.extras!.length, 2);
     });
 
-    test('--no-bvalue', () {
-      final args = TestSimple()..parse(['--no-bvalue', '--dvalue=10.0']);
+    test('--no-bvalue', () async {
+      final args = TestSimple();
+      await args.parse(['--no-bvalue', '--dvalue=10.0']);
 
       expect(args.bvalue, false);
     });
 
-    test('short key', () {
-      final args = TestSimple()..parse(['-i', '300', '--dvalue=10.0']);
+    test('short key', () async {
+      final args = TestSimple();
+      await args.parse(['-i', '300', '--dvalue=10.0']);
 
       expect(args.ivalue, 300);
     });
 
-    test('stacked boolean flags', () {
-      final args = TestStackedBooleanArguments()..parse(['-ab', '-c']);
+    test('stacked boolean flags', () async {
+      final args = TestStackedBooleanArguments();
+      await args.parse(['-ab', '-c']);
       expect(args.avalue, true);
       expect(args.bvalue, true);
       expect(args.cvalue, true);
       expect(args.dvalue, null);
     });
 
-    test('long key with equal', () {
-      final args = TestSimple()
-        ..parse(['--ivalue=450', '--dvalue=55.5', '--svalue=John']);
+    test('long key with equal', () async {
+      final args = TestSimple();
+      await args.parse(['--ivalue=450', '--dvalue=55.5', '--svalue=John']);
 
       expect(args.ivalue, 450);
       expect(args.dvalue, 55.5);
@@ -382,13 +385,15 @@ void main() {
     });
 
     group('default value', () {
-      test('default value exists if no argument given', () {
-        final args = TestWithDefaultValue()..parse([]);
+      test('default value exists if no argument given', () async {
+        final args = TestWithDefaultValue();
+        await args.parse([]);
         expect(args.long, 'hello');
       });
 
-      test('value supplied overrides default value', () {
-        final args = TestWithDefaultValue()..parse(['--long', 'goodbye']);
+      test('value supplied overrides default value', () async {
+        final args = TestWithDefaultValue();
+        await args.parse(['--long', 'goodbye']);
         expect(args.long, 'goodbye');
       });
     });
@@ -397,38 +402,37 @@ void main() {
       var environmentValue = 'Hello from the Environment';
       final Map<String, String> environment = {'TEST_HELLO': environmentValue};
 
-      test('default value exists if no value found in environment', () {
-        final args = TestWithEnvironmentValue()
-          ..withEnvironment({})
-          ..parse([]);
+      test('default value exists if no value found in environment', () async {
+        final args = TestWithEnvironmentValue()..withEnvironment({});
+        await args.parse([]);
         expect(args.long, 'hello');
       });
 
-      test('environment variable supplied overrides default value', () {
-        final args = TestWithEnvironmentValue()
-          ..withEnvironment(environment)
-          ..parse([]);
+      test('environment variable supplied overrides default value', () async {
+        final args = TestWithEnvironmentValue()..withEnvironment(environment);
+        await args.parse([]);
         expect(args.long, environmentValue);
       });
 
-      test('value supplied overrides environment value', () {
-        final args = TestWithEnvironmentValue()
-          ..withEnvironment(environment)
-          ..parse(['--long', 'goodbye']);
+      test('value supplied overrides environment value', () async {
+        final args = TestWithEnvironmentValue()..withEnvironment(environment);
+        await args.parse(['--long', 'goodbye']);
         expect(args.long, 'goodbye');
       });
     });
 
     group('non-annotated values', () {
-      test('can exist within a command', () {
-        final args = TestWithNonAnnotationValue()..parse([]);
+      test('can exist within a command', () async {
+        final args = TestWithNonAnnotationValue();
+        await args.parse([]);
         expect(args.long, 'hello');
         expect(args.lateProperty, 'Eager should be late');
         expect(args.noAnnotation, 'Not Reflected');
       });
 
-      test('properties can be late for lazy evaluation', () {
-        final args = TestWithNonAnnotationValue()..parse([]);
+      test('properties can be late for lazy evaluation', () async {
+        final args = TestWithNonAnnotationValue();
+        await args.parse([]);
         expect(args.eagerProperty, 'Eager');
         args.eagerProperty = 'Now Late';
         expect(args.lateProperty, 'Now Late should be late');
@@ -438,15 +442,17 @@ void main() {
     });
 
     group('list handling', () {
-      test('allow', () {
-        final args = TestMultiple()..parse(['--names=John', '--names', 'Jack']);
+      test('allow', () async {
+        final args = TestMultiple();
+        await args.parse(['--names=John', '--names', 'Jack']);
         expect(args.names[0], 'John');
         expect(args.names[1], 'Jack');
       });
 
-      test('disallow but supply multiple', () {
+      test('disallow but supply multiple', () async {
         try {
-          var _ = TestMultiple()..parse(['--name=John', '--name=Jack']);
+          var args = TestMultiple();
+          await args.parse(['--name=John', '--name=Jack']);
           fail(
             'supplying multiple parameters when allowMultiple = null should have thrown an exception',
           );
@@ -456,36 +462,40 @@ void main() {
       });
     });
 
-    test('invalid argument is caught', () {
+    test('invalid argument is caught', () async {
       try {
-        var _ = TestSimple()..parse(['--dvalue=55.5', '--invalid']);
+        var args = TestSimple();
+        await args.parse(['--dvalue=55.5', '--invalid']);
         fail('invalid argument did not throw an exception');
       } on ArgumentError {
         expect(1, 1);
       }
     });
 
-    test('not supplying argument', () {
+    test('not supplying argument', () async {
       try {
-        var _ = TestSimple()..parse(['--dvalue']);
+        var args = TestSimple();
+        await args.parse(['--dvalue']);
         fail('no value did not throw an exception');
       } on ArgumentError {
         expect(1, 1);
       }
     });
 
-    test('missing a required argument throws an error', () {
+    test('missing a required argument throws an error', () async {
       try {
-        var _ = TestSimple()..parse([]);
+        var args = TestSimple();
+        await args.parse([]);
         fail('missing required argument did not throw an exception');
       } on ArgumentError {
         expect(1, 1);
       }
     });
 
-    test('same argument being supplied multiple times', () {
+    test('same argument being supplied multiple times', () async {
       try {
-        var _ = TestSimple().parse(['--dvalue=5.5', '--dvalue=5.5']);
+        var args = TestSimple();
+        await args.parse(['--dvalue=5.5', '--dvalue=5.5']);
         fail(
           'same argument supplied multiple times did not thrown an exception',
         );
@@ -495,14 +505,16 @@ void main() {
     });
 
     group('must be one of', () {
-      test('works', () {
-        final args = TestMustBeOneOf()..parse(['--greeting=hello']);
+      test('works', () async {
+        final args = TestMustBeOneOf();
+        await args.parse(['--greeting=hello']);
         expect(args.greeting, 'hello');
       });
 
-      test('catches invalid value', () {
+      test('catches invalid value', () async {
         try {
-          var _ = TestMustBeOneOf()..parse(['--greeting=later']);
+          var args = TestMustBeOneOf();
+          await args.parse(['--greeting=later']);
           fail('not one of must be one of did not thrown an exception');
         } on ArgumentError catch (e) {
           expect(e.toString(), contains('must be one of'));
@@ -511,22 +523,25 @@ void main() {
     });
 
     group('integer parameter', () {
-      test('works', () {
-        var _ = TestIntegerDoubleMinMax()..parse(['--int-value=2']);
+      test('works', () async {
+        var args = TestIntegerDoubleMinMax();
+        await args.parse(['--int-value=2']);
       });
 
-      test('throws an error when below the range', () {
+      test('throws an error when below the range', () async {
         try {
-          var _ = TestIntegerDoubleMinMax()..parse(['--int-value=0']);
+          var args = TestIntegerDoubleMinMax();
+          await args.parse(['--int-value=0']);
           fail('an integer below the minimum did not throw an exception');
         } on ArgumentError {
           expect(1, 1);
         }
       });
 
-      test('throws an error when above the range', () {
+      test('throws an error when above the range', () async {
         try {
-          var _ = TestIntegerDoubleMinMax()..parse(['--int-value=100']);
+          var args = TestIntegerDoubleMinMax();
+          await args.parse(['--int-value=100']);
           fail('an integer below the maximum did not throw an exception');
         } on ArgumentError {
           expect(1, 1);
@@ -535,22 +550,25 @@ void main() {
     });
 
     group('double parameter', () {
-      test('works', () {
-        var _ = TestIntegerDoubleMinMax()..parse(['--double-value=2.5']);
+      test('works', () async {
+        var args = TestIntegerDoubleMinMax();
+        await args.parse(['--double-value=2.5']);
       });
 
-      test('throws an error when below the range', () {
+      test('throws an error when below the range', () async {
         try {
-          var _ = TestIntegerDoubleMinMax()..parse(['--double-value=1.1']);
+          var args = TestIntegerDoubleMinMax();
+          await args.parse(['--double-value=1.1']);
           fail('a double below the minimum did not throw an exception');
         } on ArgumentError {
           expect(1, 1);
         }
       });
 
-      test('throws an error when above the range', () {
+      test('throws an error when above the range', () async {
         try {
-          var _ = TestIntegerDoubleMinMax()..parse(['--double-value=4.6']);
+          var args = TestIntegerDoubleMinMax();
+          await args.parse(['--double-value=4.6']);
           fail('a double below the maximum did not throw an exception');
         } on ArgumentError {
           expect(1, 1);
@@ -558,24 +576,26 @@ void main() {
       });
     });
 
-    test('not enough extras', () {
+    test('not enough extras', () async {
       try {
-        var _ = TestMinimumMaximumExtras()..parse([]);
+        var args = TestMinimumMaximumExtras();
+        await args.parse([]);
         fail('not enough extras did not throw an exception');
       } on ArgumentError {
         expect(1, 1);
       }
     });
 
-    test('enough extras', () {
-      final args = TestMinimumMaximumExtras()..parse(['extra1']);
+    test('enough extras', () async {
+      final args = TestMinimumMaximumExtras();
+      await args.parse(['extra1']);
       expect(args.extras!.length, 1);
     });
 
-    test('too many extras', () {
+    test('too many extras', () async {
       try {
-        var _ = TestMinimumMaximumExtras()
-          ..parse(['extra1', 'extra2', 'extra3', 'extra4']);
+        var args = TestMinimumMaximumExtras();
+        await args.parse(['extra1', 'extra2', 'extra3', 'extra4']);
         fail('too many extras did not throw an exception');
       } on ArgumentError {
         expect(1, 1);
@@ -583,18 +603,18 @@ void main() {
     });
 
     group('trailing arguments', () {
-      test('by default allows', () {
-        final args = TestAllowTrailingArguments()
-          ..parse(['--name=John', 'hello.txt', '--other=Jack']);
+      test('by default allows', () async {
+        final args = TestAllowTrailingArguments();
+        await args.parse(['--name=John', 'hello.txt', '--other=Jack']);
         expect(args.name, 'John');
         expect(args.other, 'Jack');
         expect(args.extras!.length, 1);
         expect(args.extras!.contains('hello.txt'), true);
       });
 
-      test('when turned off trailing arguments become extras', () {
-        final args = TestDisallowTrailingArguments()
-          ..parse(['--name=John', 'hello.txt', '--other=Jack']);
+      test('when turned off trailing arguments become extras', () async {
+        final args = TestDisallowTrailingArguments();
+        await args.parse(['--name=John', 'hello.txt', '--other=Jack']);
         expect(args.name, 'John');
         expect(args.other, null);
         expect(args.extras!.length, 2);
@@ -604,27 +624,28 @@ void main() {
     });
 
     group('file must exist', () {
-      test('file that does not exist', () {
+      test('file that does not exist', () async {
         try {
-          var _ = TestFileDirectoryMustExist()
-            ..parse(['--file=.${path.separator}file-that-does-not-exist.txt']);
+          var args = TestFileDirectoryMustExist();
+          await args
+              .parse(['--file=.${path.separator}file-that-does-not-exist.txt']);
           fail('file that does not exist did not throw an exception');
         } on ArgumentError {
           expect(1, 1);
         }
       });
 
-      test('file that exists', () {
-        final args = TestFileDirectoryMustExist()
-          ..parse(['--file=.${path.separator}pubspec.yaml']);
+      test('file that exists', () async {
+        final args = TestFileDirectoryMustExist();
+        await args.parse(['--file=.${path.separator}pubspec.yaml']);
         expect(args.file.path, contains('pubspec.yaml'));
       });
     });
 
     group('argumentTerminator', () {
-      test('default', () {
-        final args = TestArgumentTerminatorDefault()
-          ..parse(['--name=John', '--', '--other=Jack', 'Doe']);
+      test('default', () async {
+        final args = TestArgumentTerminatorDefault();
+        await args.parse(['--name=John', '--', '--other=Jack', 'Doe']);
         expect(args.name, 'John');
         expect(args.other, null);
         expect(args.extras!.length, 2);
@@ -632,10 +653,10 @@ void main() {
         expect(args.extras!.contains('Doe'), true);
       });
 
-      test('set to null but try to use', () {
+      test('set to null but try to use', () async {
         try {
-          var _ = TestArgumentTerminatorNull()
-            ..parse(['--name=John', '--', '--other=Jack', 'Doe']);
+          var args = TestArgumentTerminatorNull();
+          await args.parse(['--name=John', '--', '--other=Jack', 'Doe']);
           fail(
             'null argument terminator and -- should have thrown an exception',
           );
@@ -644,18 +665,18 @@ void main() {
         }
       });
 
-      test('null terminator without use', () {
-        final args = TestArgumentTerminatorDefault()
-          ..parse(['--name=John', '--other=Jack', 'Doe']);
+      test('null terminator without use', () async {
+        final args = TestArgumentTerminatorDefault();
+        await args.parse(['--name=John', '--other=Jack', 'Doe']);
         expect(args.name, 'John');
         expect(args.other, 'Jack');
         expect(args.extras!.length, 1);
         expect(args.extras!.contains('Doe'), true);
       });
 
-      test('set to --args', () {
-        final args = TestArgumentTerminatorSet()
-          ..parse(['--name=John', '--args', '--other=Jack', 'Doe']);
+      test('set to --args', () async {
+        final args = TestArgumentTerminatorSet();
+        await args.parse(['--name=John', '--args', '--other=Jack', 'Doe']);
         expect(args.name, 'John');
         expect(args.other, null);
         expect(args.extras!.length, 2);
@@ -663,9 +684,10 @@ void main() {
         expect(args.extras!.contains('Doe'), true);
       });
 
-      test('set to --args but using mixed case for argument terminator', () {
-        final args = TestArgumentTerminatorSet()
-          ..parse(['--name=John', '--ArGS', '--other=Jack', 'Doe']);
+      test('set to --args but using mixed case for argument terminator',
+          () async {
+        final args = TestArgumentTerminatorSet();
+        await args.parse(['--name=John', '--ArGS', '--other=Jack', 'Doe']);
         expect(args.name, 'John');
         expect(args.other, null);
         expect(args.extras!.length, 2);
@@ -673,9 +695,9 @@ void main() {
         expect(args.extras!.contains('Doe'), true);
       });
 
-      test('set to --args but not used', () {
-        final args = TestArgumentTerminatorSet()
-          ..parse(['--name=John', '--other=Jack', 'Doe']);
+      test('set to --args but not used', () async {
+        final args = TestArgumentTerminatorSet();
+        await args.parse(['--name=John', '--other=Jack', 'Doe']);
         expect(args.name, 'John');
         expect(args.other, 'Jack');
         expect(args.extras!.length, 1);
@@ -683,68 +705,77 @@ void main() {
       });
     });
 
-    test('invalid short name parameter', () {
+    test('invalid short name parameter', () async {
       try {
-        var _ = TestInvalidShortKeyName()..parse([]);
+        var args = TestInvalidShortKeyName();
+        await args.parse([]);
         fail('invalid short name did not throw an exception');
       } on StateError {
         expect(1, 1);
       }
     });
 
-    test('invalid long name parameter', () {
+    test('invalid long name parameter', () async {
       try {
-        var _ = TestInvalidLongKeyName()..parse([]);
+        var args = TestInvalidLongKeyName();
+        await args.parse([]);
         fail('invalid long name did not throw an exception');
       } on StateError {
         expect(1, 1);
       }
     });
 
-    test('short and long parameters with the same name', () {
-      final args = TestShortAndLongSameKey()..parse(['-a=5', '--a=10']);
+    test('short and long parameters with the same name', () async {
+      final args = TestShortAndLongSameKey();
+      await args.parse(['-a=5', '--a=10']);
       expect(args.abc, 5);
       expect(args.a, 10);
     });
 
     group('strict setting on', () {
-      test('has no long option when one was not specified', () {
+      test('has no long option when one was not specified', () async {
         try {
-          var _ = TestParserStrict()..parse(['--nono=12']);
+          var args = TestParserStrict();
+          await args.parse(['--nono=12']);
           fail('specifying the parameter name should have thrown an exception');
         } on ArgumentError {
           expect(1, 1);
         }
       });
 
-      test('short option for non-long option works', () {
-        final args = TestParserStrict()..parse(['-n=12']);
+      test('short option for non-long option works', () async {
+        final args = TestParserStrict();
+        await args.parse(['-n=12']);
         expect(args.nono, 12);
       });
 
-      test('long option added works', () {
-        final args = TestParserStrict()..parse(['--say-hello']);
+      test('long option added works', () async {
+        final args = TestParserStrict();
+        await args.parse(['--say-hello']);
         expect(args.shouldSayHello, true);
       });
     });
 
     group('long argument override', () {
-      test('long item can be overridden', () {
-        final args = TestLongKeyHandling()..parse([]);
+      test('long item can be overridden', () async {
+        final args = TestLongKeyHandling();
+        await args.parse([]);
         expect(args.usage().contains('over-ride-long-item-name'), true);
         expect(args.usage().contains('longItem'), false);
       });
 
-      test('long item does not display', () {
-        final args = TestLongKeyHandling()..parse([]);
+      test('long item does not display', () async {
+        final args = TestLongKeyHandling();
+        await args.parse([]);
         expect(args.usage().contains('-n'), true);
         expect(args.usage().contains('itemWithNoLong'), false);
         expect(args.usage().contains('item-with-no-long'), false);
       });
 
-      test('some argument must exist', () {
+      test('some argument must exist', () async {
         try {
-          var _ = TestNoKey()..parse([]);
+          var args = TestNoKey();
+          await args.parse([]);
           fail('no key at all should have thrown an exception');
         } on StateError {
           expect(1, 1);
@@ -753,39 +784,41 @@ void main() {
     });
 
     group('directory must exist', () {
-      test('directory that does not exist', () {
+      test('directory that does not exist', () async {
         try {
-          var _ = TestFileDirectoryMustExist()
-            ..parse([
-              '--directory=.${path.separator}directory-that-does-not-exist'
-            ]);
+          var args = TestFileDirectoryMustExist();
+          await args.parse(
+            ['--directory=.${path.separator}directory-that-does-not-exist'],
+          );
           fail('directory that does not exist did not throw an exception');
         } on ArgumentError {
           expect(1, 1);
         }
       });
 
-      test('directory that exists', () {
-        final args = TestFileDirectoryMustExist()
-          ..parse(['--directory=.${path.separator}lib']);
+      test('directory that exists', () async {
+        final args = TestFileDirectoryMustExist();
+        await args.parse(['--directory=.${path.separator}lib']);
         expect(args.directory.path, contains('lib'));
       });
     });
   });
 
   group('bad configuration', () {
-    test('same short argument multiple times', () {
+    test('same short argument multiple times', () async {
       try {
-        var _ = TestMultipleShortArgsSameKey()..parse([]);
+        var args = TestMultipleShortArgsSameKey();
+        await args.parse([]);
         fail('same short arg multiple times did not throw an exception');
       } on StateError {
         expect(1, 1);
       }
     });
 
-    test('same long argument multiple times', () {
+    test('same long argument multiple times', () async {
       try {
-        var _ = TestMultipleLongArgsSameKey()..parse([]);
+        var args = TestMultipleLongArgsSameKey();
+        await args.parse([]);
         fail('same long arg multiple times did not throw an exception');
       } on StateError {
         expect(1, 1);
@@ -794,13 +827,15 @@ void main() {
   });
 
   group('help generation', () {
-    test('help contains app description', () {
-      final args = TestSimple()..parse(['--dvalue=10.0']);
+    test('help contains app description', () async {
+      final args = TestSimple();
+      await args.parse(['--dvalue=10.0']);
       expect(args.usage(), contains('app-description'));
     });
 
-    test('help contains extended help', () {
-      final args = TestSimple()..parse(['--dvalue=10.0']);
+    test('help contains extended help', () async {
+      final args = TestSimple();
+      await args.parse(['--dvalue=10.0']);
       final usage = args.usage();
 
       expect(usage, contains('extended-help'));
@@ -808,18 +843,21 @@ void main() {
       expect(usage, contains('Non-indented help'));
     });
 
-    test('help contains short key for ivalue', () {
-      final args = TestSimple()..parse(['--dvalue=10.0']);
+    test('help contains short key for ivalue', () async {
+      final args = TestSimple();
+      await args.parse(['--dvalue=10.0']);
       expect(args.usage(), contains('-i,'));
     });
 
-    test('help contains long key for ivalue', () {
-      final args = TestSimple()..parse(['--dvalue=10.0']);
+    test('help contains long key for ivalue', () async {
+      final args = TestSimple();
+      await args.parse(['--dvalue=10.0']);
       expect(args.usage(), contains('--ivalue'));
     });
 
-    test('help contains [REQUIRED] for --dvalue', () {
-      final args = TestSimple()..parse(['--dvalue=10.0']);
+    test('help contains [REQUIRED] for --dvalue', () async {
+      final args = TestSimple();
+      await args.parse(['--dvalue=10.0']);
       expect(args.usage(), contains('[REQUIRED]'));
     });
 
@@ -828,35 +866,40 @@ void main() {
       expect(args.usage(), contains('must be one of'));
     });
 
-    test('help contains dashed long key for checkingCamelToDash', () {
-      final args = TestSimple()..parse(['--dvalue=10.0']);
+    test('help contains dashed long key for checkingCamelToDash', () async {
+      final args = TestSimple();
+      await args.parse(['--dvalue=10.0']);
       expect(args.usage(), contains('--checking-camel-to-dash'));
     });
 
-    test('parameter wrapping', () {
-      final args = TestMultipleLineArgumentHelp()..parse(['-a=1']);
+    test('parameter wrapping', () async {
+      final args = TestMultipleLineArgumentHelp();
+      await args.parse(['-a=1']);
       expect(args.usage(), matches(RegExp(r'.*\n\s+Silly help message')));
       expect(args.usage(), matches(RegExp(r'.*\n\s+\[REQUIRED\]')));
     });
 
-    test('help works with -?', () {
-      final args = TestHelpArgument()..parse(['-?']);
+    test('help works with -?', () async {
+      final args = TestHelpArgument();
+      await args.parse(['-?']);
       expect(args.help, true);
     });
 
-    test('help works with -h', () {
-      final args = TestHelpArgument()..parse(['-h']);
+    test('help works with -h', () async {
+      final args = TestHelpArgument();
+      await args.parse(['-h']);
       expect(args.help, true);
     });
 
-    test('help works with --help', () {
-      final args = TestHelpArgument()..parse(['--help']);
+    test('help works with --help', () async {
+      final args = TestHelpArgument();
+      await args.parse(['--help']);
       expect(args.help, true);
     });
 
-    test('help ignores parameters after help flag', () {
-      final args = TestHelpArgument()
-        ..parse(['-?', '--bad-argument1', '-b', 'hello']);
+    test('help ignores parameters after help flag', () async {
+      final args = TestHelpArgument();
+      await args.parse(['-?', '--bad-argument1', '-b', 'hello']);
       expect(args.help, true);
       expect(args.extras!.contains('--bad-argument1'), true);
       expect(args.extras!.contains('-b'), true);
@@ -886,14 +929,14 @@ void main() {
   });
 
   group('inherited and mixin parsing/assignment', () {
-    test('basic arguments', () {
-      final args = ChildExtension()
-        ..parse([
-          '--child-value', //
-          '--string-value', 'hello', //
-          '--double-value', '222.22', //
-          '--base-value', '321', //
-        ]);
+    test('basic arguments', () async {
+      final args = ChildExtension();
+      await args.parse([
+        '--child-value', //
+        '--string-value', 'hello', //
+        '--double-value', '222.22', //
+        '--base-value', '321', //
+      ]);
 
       expect(args.childValue, true);
       expect(args.stringValue, 'hello');
@@ -902,13 +945,13 @@ void main() {
       expect(args.help, null);
     });
 
-    test('with deeply nested help', () {
-      final args = ChildExtension()
-        ..parse([
-          '--double-value', '222.22', //
-          '--base-value', '321', //
-          '--help'
-        ]);
+    test('with deeply nested help', () async {
+      final args = ChildExtension();
+      await args.parse([
+        '--double-value', '222.22', //
+        '--base-value', '321', //
+        '--help'
+      ]);
 
       expect(args.childValue, null);
       expect(args.doubleValue, 222.22);
