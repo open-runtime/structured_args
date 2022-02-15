@@ -551,26 +551,57 @@ class SmartArg {
     }
   }
 
+  _runAfterCommandParsingChain(SmartArg command, List<String> arguments) {
+    SmartArg? cmd = command;
+    while (isNotNull(cmd)) {
+      cmd!.afterCommandParse(command, arguments);
+      cmd = cmd.parent;
+    }
+  }
+
+  _runBeforeCommandExecuteChain(SmartArgCommand command) {
+    List<SmartArg> commands = [];
+    SmartArg? cmd = command.parent;
+    while (isNotNull(cmd)) {
+      commands.add(cmd!);
+      cmd = cmd.parent;
+    }
+    var ittr = commands.reversed.iterator;
+    var currentCmd = command;
+    while (ittr.moveNext()) {
+      ittr.current.beforeCommandExecute(currentCmd);
+      if (ittr.current is SmartArgCommand) {
+        currentCmd = ittr.current as SmartArgCommand;
+      }
+    }
+    command.beforeCommandExecute(command);
+  }
+
   Future<void> _launchCommand(
     MirrorParameterPair commandMpp,
     List<String> arguments,
   ) async {
     final a = commandMpp.mirror;
     final b = a.type as ClassMirror;
+
+    /// Construct the new command
     final command = b.newInstance('', []) as SmartArg;
     command.parent = this;
     final subcommands = command._commands;
-
-    beforeCommandParse(command, arguments);
+    if (isNull(parent)) {
+      beforeCommandParse(command, arguments);
+    }
+    command.beforeCommandParse(command, arguments);
     await command.parse(arguments);
-    afterCommandParse(command, arguments);
 
     if (command is SmartArgCommand) {
       //Process as an actual command
       if (arguments.isEmpty ||
           isFalse(subcommands.containsKey(arguments.first))) {
-        beforeCommandExecute(command);
+        _runAfterCommandParsingChain(command, arguments);
+        _runBeforeCommandExecuteChain(command);
         await command.execute(this);
+        command.afterCommandExecute(command);
       }
       afterCommandExecute(command);
     }
@@ -593,11 +624,7 @@ class SmartArg {
   void afterCommandParse(SmartArg command, List<String> arguments) {}
 
   /// Invoked before a [SmartArgCommand] is executed
-  void beforeCommandExecute(SmartArgCommand command) {
-    if (this is SmartArgCommand) {
-      parent?.beforeCommandExecute(this as SmartArgCommand);
-    }
-  }
+  void beforeCommandExecute(SmartArgCommand command) {}
 
   /// Invoked after a [SmartArgCommand] is executed
   void afterCommandExecute(SmartArgCommand command) {}

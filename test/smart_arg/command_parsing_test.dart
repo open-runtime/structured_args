@@ -50,6 +50,12 @@ class TestSimpleCommand extends SmartArg {
   }
 
   @override
+  void afterCommandParse(SmartArg command, List<String> arguments) {
+    super.afterCommandParse(command, arguments);
+    hookOrder.add('afterCommandParse');
+  }
+
+  @override
   void beforeCommandExecute(SmartArgCommand command) {
     super.beforeCommandExecute(command);
     hookOrder.add('beforeCommandExecute');
@@ -83,6 +89,12 @@ class ChildCommand extends SmartArgCommand {
   void beforeCommandParse(SmartArg command, List<String> arguments) {
     super.beforeCommandParse(command, arguments);
     subcommandHookOrder.add('beforeChildParse');
+  }
+
+  @override
+  void afterCommandParse(SmartArg command, List<String> arguments) {
+    super.afterCommandParse(command, arguments);
+    subcommandHookOrder.add('afterChildParse');
   }
 
   @override
@@ -120,6 +132,12 @@ class FatherCommand extends SmartArgCommand {
   }
 
   @override
+  void afterCommandParse(SmartArg command, List<String> arguments) {
+    super.afterCommandParse(command, arguments);
+    subcommandHookOrder.add('afterFatherParse');
+  }
+
+  @override
   void beforeCommandExecute(SmartArgCommand command) {
     super.beforeCommandExecute(command);
     subcommandHookOrder.add('beforeFatherExecute');
@@ -154,6 +172,12 @@ class GrandFatherCommand extends SmartArg {
   }
 
   @override
+  void afterCommandParse(SmartArg command, List<String> arguments) {
+    super.afterCommandParse(command, arguments);
+    subcommandHookOrder.add('afterGrandFatherParse');
+  }
+
+  @override
   void beforeCommandExecute(SmartArgCommand command) {
     super.beforeCommandExecute(command);
     subcommandHookOrder.add('beforeGrandFatherExecute');
@@ -182,6 +206,7 @@ void main() {
         expect(whatExecuted, 'get-command: download.txt');
         expect(cmd.hookOrder, [
           'beforeCommandParse',
+          'afterCommandParse',
           'beforeCommandExecute',
           'afterCommandExecute'
         ]);
@@ -230,8 +255,13 @@ void main() {
         expect(whatExecuted, 'FatherCommand: beta');
         expect(subcommandHookOrder, [
           'beforeGrandFatherParse',
+          'beforeFatherParse',
+          'afterFatherParse',
+          'afterGrandFatherParse',
           'beforeGrandFatherExecute',
+          'beforeFatherExecute',
           'FatherExecute',
+          'afterFatherExecute',
           'afterGrandFatherExecute'
         ]);
       });
@@ -243,9 +273,15 @@ void main() {
         expect(subcommandHookOrder, [
           'beforeGrandFatherParse',
           'beforeFatherParse',
+          'beforeChildParse',
+          'afterChildParse',
+          'afterFatherParse',
+          'afterGrandFatherParse',
           'beforeGrandFatherExecute',
           'beforeFatherExecute',
+          'beforeChildExecute',
           'ChildExecute',
+          'afterChildExecute',
           'afterFatherExecute',
           'afterGrandFatherExecute'
         ]);
@@ -259,10 +295,17 @@ void main() {
           'beforeGrandFatherParse',
           'beforeFatherParse',
           'beforeChildParse',
+          'beforeChildParse',
+          'afterChildParse',
+          'afterChildParse',
+          'afterFatherParse',
+          'afterGrandFatherParse',
           'beforeGrandFatherExecute',
           'beforeFatherExecute',
           'beforeChildExecute',
+          'beforeChildExecute',
           'ChildExecute',
+          'afterChildExecute',
           'afterChildExecute',
           'afterFatherExecute',
           'afterGrandFatherExecute'
@@ -276,9 +319,15 @@ void main() {
         expect(subcommandHookOrder, [
           'beforeGrandFatherParse',
           'beforeFatherParse',
+          'beforeChildParse',
+          'afterChildParse',
+          'afterFatherParse',
+          'afterGrandFatherParse',
           'beforeGrandFatherExecute',
           'beforeFatherExecute',
+          'beforeChildExecute',
           'ChildExecute',
+          'afterChildExecute',
           'afterFatherExecute',
           'afterGrandFatherExecute'
         ]);
@@ -291,9 +340,16 @@ void main() {
         expect(subcommandHookOrder, [
           'beforeGrandFatherParse',
           'beforeGrandFatherParse',
+          'beforeFatherParse',
+          'afterFatherParse',
+          'afterGrandFatherParse',
+          'afterGrandFatherParse',
           'beforeGrandFatherExecute',
+          'beforeGrandFatherExecute',
+          'beforeFatherExecute',
           'FatherExecute',
-          'afterGrandFatherExecute'
+          'afterFatherExecute',
+          'afterGrandFatherExecute',
         ]);
       });
     });

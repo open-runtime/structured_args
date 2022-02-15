@@ -1,3 +1,8 @@
+## 3.0.1
+
+- Fix:
+  - Invocation order of `before*` and `after*` command lifecycle callbacks
+ 
 ## 3.0.0
 
 - Breaking:
