@@ -2,7 +2,7 @@ name: smart_arg_fork
 description: A smart command line argument parser for Dart that provides
   argument validation, static type checking, command execution, beautiful
   help generation and more.
-version: 3.0.1
+version: 3.1.0
 homepage: https://github.com/axrs/smart_arg/tree/master-forked
 
 environment:

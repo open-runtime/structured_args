@@ -1,3 +1,18 @@
+## 3.1.0
+
+- Added:
+  - async compatible `pre` and `post` command hooks for ease of background processing before and after command execution
+    - `preCommandParse`
+    - `postCommandParse`
+    - `preCommandExecute`
+    - `postCommandExecute`
+- Deprecated:
+  - non-async command hooks in favour of the async counterparts
+    - `beforeCommandParse`
+    - `afterCommandParse`
+    - `beforeCommandExecute`
+    - `afterCommandExecute`
+
 ## 3.0.1
 
 - Fix:

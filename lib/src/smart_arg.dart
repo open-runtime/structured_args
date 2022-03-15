@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use_from_same_package
+
 import 'dart:io';
 
 import 'package:collection/collection.dart' show IterableExtension;
@@ -551,15 +553,16 @@ class SmartArg {
     }
   }
 
-  _runAfterCommandParsingChain(SmartArg command, List<String> arguments) {
+  _runAfterCommandParsingChain(SmartArg command, List<String> arguments) async {
     SmartArg? cmd = command;
     while (isNotNull(cmd)) {
       cmd!.afterCommandParse(command, arguments);
+      await cmd.postCommandParse(command, arguments);
       cmd = cmd.parent;
     }
   }
 
-  _runBeforeCommandExecuteChain(SmartArgCommand command) {
+  _runBeforeCommandExecuteChain(SmartArgCommand command) async {
     List<SmartArg> commands = [];
     SmartArg? cmd = command.parent;
     while (isNotNull(cmd)) {
@@ -570,11 +573,13 @@ class SmartArg {
     var currentCmd = command;
     while (ittr.moveNext()) {
       ittr.current.beforeCommandExecute(currentCmd);
+      await ittr.current.preCommandExecute(currentCmd);
       if (ittr.current is SmartArgCommand) {
         currentCmd = ittr.current as SmartArgCommand;
       }
     }
     command.beforeCommandExecute(command);
+    await command.preCommandExecute(command);
   }
 
   Future<void> _launchCommand(
@@ -590,20 +595,25 @@ class SmartArg {
     final subcommands = command._commands;
     if (isNull(parent)) {
       beforeCommandParse(command, arguments);
+      await preCommandParse(command, arguments);
     }
     command.beforeCommandParse(command, arguments);
+    await command.preCommandParse(command, arguments);
+
     await command.parse(arguments);
 
     if (command is SmartArgCommand) {
       //Process as an actual command
       if (arguments.isEmpty ||
           isFalse(subcommands.containsKey(arguments.first))) {
-        _runAfterCommandParsingChain(command, arguments);
-        _runBeforeCommandExecuteChain(command);
+        await _runAfterCommandParsingChain(command, arguments);
+        await _runBeforeCommandExecuteChain(command);
         await command.execute(this);
         command.afterCommandExecute(command);
+        await command.postCommandExecute(command);
       }
       afterCommandExecute(command);
+      await postCommandExecute(command);
     }
   }
 
@@ -618,14 +628,32 @@ class SmartArg {
   }
 
   /// Invoked before an annotated [Command] parsing has started.
+  @Deprecated('use [preCommandParse] instead')
   void beforeCommandParse(SmartArg command, List<String> arguments) {}
 
   /// Invoked after the [Command] parsing has completed.
+  @Deprecated('use [postCommandParse] instead')
   void afterCommandParse(SmartArg command, List<String> arguments) {}
 
   /// Invoked before a [SmartArgCommand] is executed
+  @Deprecated('use [preCommandExecute] instead')
   void beforeCommandExecute(SmartArgCommand command) {}
 
   /// Invoked after a [SmartArgCommand] is executed
+  @Deprecated('use [postCommandExecute] instead')
   void afterCommandExecute(SmartArgCommand command) {}
+
+  /// Awaited before an annotated [Command] parsing has started.
+  Future<void> preCommandParse(SmartArg command, List<String> arguments) =>
+      Future.value();
+
+  /// Awaited after the [Command] parsing has completed.
+  Future<void> postCommandParse(SmartArg command, List<String> arguments) =>
+      Future.value();
+
+  /// Awaited before a [SmartArgCommand] is executed
+  Future<void> preCommandExecute(SmartArgCommand command) => Future.value();
+
+  /// Awaited after a [SmartArgCommand] is executed
+  Future<void> postCommandExecute(SmartArgCommand command) => Future.value();
 }

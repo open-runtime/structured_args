@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use_from_same_package
+
 import 'package:smart_arg_fork/smart_arg_fork.dart';
 import 'package:test/test.dart';
 
@@ -66,6 +68,34 @@ class TestSimpleCommand extends SmartArg {
     super.afterCommandExecute(command);
     hookOrder.add('afterCommandExecute');
   }
+
+  @override
+  Future<void> preCommandParse(SmartArg command, List<String> arguments) {
+    var val = super.preCommandParse(command, arguments);
+    hookOrder.add('preCommandParse');
+    return val;
+  }
+
+  @override
+  Future<void> postCommandParse(SmartArg command, List<String> arguments) {
+    var val = super.postCommandParse(command, arguments);
+    hookOrder.add('postCommandParse');
+    return val;
+  }
+
+  @override
+  Future<void> preCommandExecute(SmartArgCommand command) {
+    var val = super.preCommandExecute(command);
+    hookOrder.add('preCommandExecute');
+    return val;
+  }
+
+  @override
+  Future<void> postCommandExecute(SmartArgCommand command) {
+    var val = super.postCommandExecute(command);
+    hookOrder.add('postCommandExecute');
+    return val;
+  }
 }
 
 List<String> subcommandHookOrder = [];
@@ -108,6 +138,34 @@ class ChildCommand extends SmartArgCommand {
     super.afterCommandExecute(command);
     subcommandHookOrder.add('afterChildExecute');
   }
+
+  @override
+  Future<void> preCommandParse(SmartArg command, List<String> arguments) {
+    var val = super.preCommandParse(command, arguments);
+    subcommandHookOrder.add('preChildCommandParse');
+    return val;
+  }
+
+  @override
+  Future<void> postCommandParse(SmartArg command, List<String> arguments) {
+    var val = super.postCommandParse(command, arguments);
+    subcommandHookOrder.add('postChildCommandParse');
+    return val;
+  }
+
+  @override
+  Future<void> preCommandExecute(SmartArgCommand command) {
+    var val = super.preCommandExecute(command);
+    subcommandHookOrder.add('preChildCommandExecute');
+    return val;
+  }
+
+  @override
+  Future<void> postCommandExecute(SmartArgCommand command) {
+    var val = super.postCommandExecute(command);
+    subcommandHookOrder.add('postChildCommandExecute');
+    return val;
+  }
 }
 
 @SmartArg.reflectable
@@ -147,6 +205,34 @@ class FatherCommand extends SmartArgCommand {
   void afterCommandExecute(SmartArgCommand command) {
     super.afterCommandExecute(command);
     subcommandHookOrder.add('afterFatherExecute');
+  }
+
+  @override
+  Future<void> preCommandParse(SmartArg command, List<String> arguments) {
+    var val = super.preCommandParse(command, arguments);
+    subcommandHookOrder.add('preFatherCommandParse');
+    return val;
+  }
+
+  @override
+  Future<void> postCommandParse(SmartArg command, List<String> arguments) {
+    var val = super.postCommandParse(command, arguments);
+    subcommandHookOrder.add('postFatherCommandParse');
+    return val;
+  }
+
+  @override
+  Future<void> preCommandExecute(SmartArgCommand command) {
+    var val = super.preCommandExecute(command);
+    subcommandHookOrder.add('preFatherCommandExecute');
+    return val;
+  }
+
+  @override
+  Future<void> postCommandExecute(SmartArgCommand command) {
+    var val = super.postCommandExecute(command);
+    subcommandHookOrder.add('postFatherCommandExecute');
+    return val;
   }
 }
 
@@ -188,6 +274,34 @@ class GrandFatherCommand extends SmartArg {
     super.afterCommandExecute(command);
     subcommandHookOrder.add('afterGrandFatherExecute');
   }
+
+  @override
+  Future<void> preCommandParse(SmartArg command, List<String> arguments) {
+    var val = super.preCommandParse(command, arguments);
+    subcommandHookOrder.add('preGrandFatherCommandParse');
+    return val;
+  }
+
+  @override
+  Future<void> postCommandParse(SmartArg command, List<String> arguments) {
+    var val = super.postCommandParse(command, arguments);
+    subcommandHookOrder.add('postGrandFatherCommandParse');
+    return val;
+  }
+
+  @override
+  Future<void> preCommandExecute(SmartArgCommand command) {
+    var val = super.preCommandExecute(command);
+    subcommandHookOrder.add('preGrandFatherCommandExecute');
+    return val;
+  }
+
+  @override
+  Future<void> postCommandExecute(SmartArgCommand command) {
+    var val = super.postCommandExecute(command);
+    subcommandHookOrder.add('postGrandFatherCommandExecute');
+    return val;
+  }
 }
 
 void main() {
@@ -206,9 +320,13 @@ void main() {
         expect(whatExecuted, 'get-command: download.txt');
         expect(cmd.hookOrder, [
           'beforeCommandParse',
+          'preCommandParse',
           'afterCommandParse',
+          'postCommandParse',
           'beforeCommandExecute',
-          'afterCommandExecute'
+          'preCommandExecute',
+          'afterCommandExecute',
+          'postCommandExecute'
         ]);
       });
 
@@ -255,14 +373,22 @@ void main() {
         expect(whatExecuted, 'FatherCommand: beta');
         expect(subcommandHookOrder, [
           'beforeGrandFatherParse',
+          'preGrandFatherCommandParse',
           'beforeFatherParse',
+          'preFatherCommandParse',
           'afterFatherParse',
+          'postFatherCommandParse',
           'afterGrandFatherParse',
+          'postGrandFatherCommandParse',
           'beforeGrandFatherExecute',
+          'preGrandFatherCommandExecute',
           'beforeFatherExecute',
+          'preFatherCommandExecute',
           'FatherExecute',
           'afterFatherExecute',
-          'afterGrandFatherExecute'
+          'postFatherCommandExecute',
+          'afterGrandFatherExecute',
+          'postGrandFatherCommandExecute'
         ]);
       });
 
@@ -272,18 +398,30 @@ void main() {
         expect(whatExecuted, 'ChildCommand: charlie');
         expect(subcommandHookOrder, [
           'beforeGrandFatherParse',
+          'preGrandFatherCommandParse',
           'beforeFatherParse',
+          'preFatherCommandParse',
           'beforeChildParse',
+          'preChildCommandParse',
           'afterChildParse',
+          'postChildCommandParse',
           'afterFatherParse',
+          'postFatherCommandParse',
           'afterGrandFatherParse',
+          'postGrandFatherCommandParse',
           'beforeGrandFatherExecute',
+          'preGrandFatherCommandExecute',
           'beforeFatherExecute',
+          'preFatherCommandExecute',
           'beforeChildExecute',
+          'preChildCommandExecute',
           'ChildExecute',
           'afterChildExecute',
+          'postChildCommandExecute',
           'afterFatherExecute',
-          'afterGrandFatherExecute'
+          'postFatherCommandExecute',
+          'afterGrandFatherExecute',
+          'postGrandFatherCommandExecute'
         ]);
       });
 
@@ -291,24 +429,41 @@ void main() {
         await GrandFatherCommand()
             .parse(['father', 'child', 'child', '--a-value=delta']);
         expect(whatExecuted, 'ChildCommand: delta');
+        print(subcommandHookOrder);
         expect(subcommandHookOrder, [
           'beforeGrandFatherParse',
+          'preGrandFatherCommandParse',
           'beforeFatherParse',
+          'preFatherCommandParse',
           'beforeChildParse',
+          'preChildCommandParse',
           'beforeChildParse',
+          'preChildCommandParse',
           'afterChildParse',
+          'postChildCommandParse',
           'afterChildParse',
+          'postChildCommandParse',
           'afterFatherParse',
+          'postFatherCommandParse',
           'afterGrandFatherParse',
+          'postGrandFatherCommandParse',
           'beforeGrandFatherExecute',
+          'preGrandFatherCommandExecute',
           'beforeFatherExecute',
+          'preFatherCommandExecute',
           'beforeChildExecute',
+          'preChildCommandExecute',
           'beforeChildExecute',
+          'preChildCommandExecute',
           'ChildExecute',
           'afterChildExecute',
+          'postChildCommandExecute',
           'afterChildExecute',
+          'postChildCommandExecute',
           'afterFatherExecute',
-          'afterGrandFatherExecute'
+          'postFatherCommandExecute',
+          'afterGrandFatherExecute',
+          'postGrandFatherCommandExecute',
         ]);
       });
 
@@ -318,18 +473,30 @@ void main() {
         expect(whatExecuted, 'ChildCommand: null');
         expect(subcommandHookOrder, [
           'beforeGrandFatherParse',
+          'preGrandFatherCommandParse',
           'beforeFatherParse',
+          'preFatherCommandParse',
           'beforeChildParse',
+          'preChildCommandParse',
           'afterChildParse',
+          'postChildCommandParse',
           'afterFatherParse',
+          'postFatherCommandParse',
           'afterGrandFatherParse',
+          'postGrandFatherCommandParse',
           'beforeGrandFatherExecute',
+          'preGrandFatherCommandExecute',
           'beforeFatherExecute',
+          'preFatherCommandExecute',
           'beforeChildExecute',
+          'preChildCommandExecute',
           'ChildExecute',
           'afterChildExecute',
+          'postChildCommandExecute',
           'afterFatherExecute',
-          'afterGrandFatherExecute'
+          'postFatherCommandExecute',
+          'afterGrandFatherExecute',
+          'postGrandFatherCommandExecute'
         ]);
       });
 
@@ -339,17 +506,28 @@ void main() {
         expect(whatExecuted, 'FatherCommand: beta');
         expect(subcommandHookOrder, [
           'beforeGrandFatherParse',
+          'preGrandFatherCommandParse',
           'beforeGrandFatherParse',
+          'preGrandFatherCommandParse',
           'beforeFatherParse',
+          'preFatherCommandParse',
           'afterFatherParse',
+          'postFatherCommandParse',
           'afterGrandFatherParse',
+          'postGrandFatherCommandParse',
           'afterGrandFatherParse',
+          'postGrandFatherCommandParse',
           'beforeGrandFatherExecute',
+          'preGrandFatherCommandExecute',
           'beforeGrandFatherExecute',
+          'preGrandFatherCommandExecute',
           'beforeFatherExecute',
+          'preFatherCommandExecute',
           'FatherExecute',
           'afterFatherExecute',
+          'postFatherCommandExecute',
           'afterGrandFatherExecute',
+          'postGrandFatherCommandExecute'
         ]);
       });
     });
