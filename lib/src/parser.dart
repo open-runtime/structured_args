@@ -30,6 +30,9 @@ class Parser {
   /// parsing errors.
   final bool exitOnFailure;
 
+  /// Print usage of the application if an [exitOnFailure] is triggered
+  final bool printUsageOnExitFailure;
+
   /// If true, do not add any long parameters from the class properties.
   ///
   /// All long parameter names must be specified manually.
@@ -54,6 +57,7 @@ class Parser {
     this.minimumExtras,
     this.maximumExtras,
     this.exitOnFailure = true,
+    this.printUsageOnExitFailure = false,
     this.strict = false,
     this.argumentTerminator = '--',
     this.allowTrailingArguments = true,

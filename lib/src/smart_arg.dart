@@ -165,8 +165,10 @@ class SmartArg {
     } on ArgumentError catch (e) {
       if (isTrue(_app?.exitOnFailure)) {
         print(e.toString());
-        print('');
-        print(usage());
+        if (isTrue(_app?.printUsageOnExitFailure)) {
+          print('');
+          print(usage());
+        }
         exit(1);
       }
 
