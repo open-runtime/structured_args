@@ -29,9 +29,6 @@ class Args extends SmartArg {
     environmentVariable: 'GREETING_COUNT',
   )
   late int count;
-
-  @HelpArgument()
-  bool help = false;
 }
 
 void main(List<String> arguments) async {

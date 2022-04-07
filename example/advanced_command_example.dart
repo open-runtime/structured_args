@@ -1,23 +1,6 @@
-import 'dart:io';
-
 import 'package:smart_arg_fork/smart_arg_fork.dart';
 
 import 'advanced_command_example.reflectable.dart';
-
-/// A basic mixin for adding a the help argument to each [SmartArg] extension
-@SmartArg.reflectable
-mixin HelpArg {
-  @HelpArgument()
-  bool? help;
-
-  void printUsageAndExitIfHelpRequested() {
-    if (help == true) {
-      final SmartArg arg = this as SmartArg;
-      print(arg.usage());
-      exit(0);
-    }
-  }
-}
 
 /// A basic mixin for adding a Docker Image argument to each [SmartArg] extension
 @SmartArg.reflectable
@@ -28,23 +11,21 @@ mixin DockerImageArg {
 
 @SmartArg.reflectable
 @Parser(description: 'Pulls a Docker Image')
-class DockerPullCommand extends SmartArgCommand with HelpArg, DockerImageArg {
+class DockerPullCommand extends SmartArgCommand with DockerImageArg {
   @override
   Future<void> execute(SmartArg parentArguments) async {
-    printUsageAndExitIfHelpRequested();
     print('\$ docker pull $image');
   }
 }
 
 @SmartArg.reflectable
 @Parser(description: 'Runs a Docker Image')
-class DockerRunCommand extends SmartArgCommand with HelpArg, DockerImageArg {
+class DockerRunCommand extends SmartArgCommand with DockerImageArg {
   @BooleanArgument(help: 'Pull image before running')
   bool pull = false;
 
   @override
   Future<void> execute(SmartArg parentArguments) async {
-    printUsageAndExitIfHelpRequested();
     print('\$ docker run${pull ? ' --pull' : ''} $image');
   }
 }
@@ -53,7 +34,7 @@ enum Status { running, stopped, all }
 
 @SmartArg.reflectable
 @Parser(description: 'Lists Docker Images')
-class DockerListCommand extends SmartArgCommand with HelpArg, DockerImageArg {
+class DockerListCommand extends SmartArgCommand with DockerImageArg {
   @EnumArgument<Status>(
     help: 'Docker Image Status',
     values: Status.values,
@@ -62,7 +43,6 @@ class DockerListCommand extends SmartArgCommand with HelpArg, DockerImageArg {
 
   @override
   Future<void> execute(SmartArg parentArguments) async {
-    printUsageAndExitIfHelpRequested();
     print('\$ docker ps --status $status');
   }
 }
@@ -71,7 +51,7 @@ class DockerListCommand extends SmartArgCommand with HelpArg, DockerImageArg {
 @Parser(
   description: 'Example of using mixins to reduce argument declarations',
 )
-class Args extends SmartArg with HelpArg {
+class Args extends SmartArg {
   @BooleanArgument(short: 'v', help: 'Verbose mode')
   bool? verbose;
 
@@ -89,5 +69,4 @@ void main(List<String> arguments) async {
   initializeReflectable();
   var args = Args();
   await args.parse(arguments);
-  args.printUsageAndExitIfHelpRequested();
 }

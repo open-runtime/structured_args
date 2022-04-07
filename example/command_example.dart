@@ -10,24 +10,14 @@ class GetCommand extends SmartArgCommand {
   @BooleanArgument(help: 'Should the file be removed after downloaded?')
   bool? removeAfterGet;
 
-  @HelpArgument()
-  bool? help;
-
   @override
   Future<void> execute(SmartArg parentArguments) async {
-    if (help == true) {
-      print(usage());
-      exit(0);
-    }
-
     if ((parentArguments as Args).verbose == true) {
       print('Verbose is on');
     } else {
       print('Verbose is off');
     }
-
     print('Getting file...');
-
     if (removeAfterGet == true) {
       print('Removing file on remote server (not really)');
     }
@@ -40,16 +30,8 @@ class PutCommand extends SmartArgCommand {
   @BooleanArgument(help: 'Should the file be removed locally after downloaded?')
   bool? removeAfterPut;
 
-  @HelpArgument()
-  bool? help;
-
   @override
   Future<void> execute(SmartArg parentArguments) async {
-    if (help == true) {
-      print(usage());
-      exit(0);
-    }
-
     if ((parentArguments as Args).verbose == true) {
       print('Verbose is on');
     } else {
@@ -83,9 +65,6 @@ class Args extends SmartArg {
 
   @Command(help: 'Put a file on the remote server')
   PutCommand? put;
-
-  @HelpArgument()
-  bool? help;
 }
 
 void main(List<String> arguments) async {

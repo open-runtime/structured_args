@@ -144,10 +144,7 @@ class TestMultiple extends SmartArg {
 
 @SmartArg.reflectable
 @Parser(exitOnFailure: false)
-class TestHelpArgument extends SmartArg {
-  @HelpArgument()
-  bool? help;
-}
+class TestHelpArgument extends SmartArg {}
 
 @SmartArg.reflectable
 @Parser(exitOnFailure: false)
@@ -285,13 +282,7 @@ class TestArgumentGroups extends SmartArg {
 }
 
 @SmartArg.reflectable
-mixin HelpMixin {
-  @HelpArgument()
-  bool? help;
-}
-
-@SmartArg.reflectable
-class BaseArg extends SmartArg with HelpMixin {
+class BaseArg extends SmartArg {
   @IntegerArgument(help: 'A integer value, added via the BaseArg class')
   int? baseValue;
 }
@@ -942,7 +933,7 @@ void main() {
       expect(args.stringValue, 'hello');
       expect(args.doubleValue, 222.22);
       expect(args.baseValue, 321);
-      expect(args.help, null);
+      expect(args.help, false);
     });
 
     test('with deeply nested help', () async {

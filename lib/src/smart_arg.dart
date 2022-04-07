@@ -56,12 +56,15 @@ String? _argumentHelp(final MirrorParameterPair mpp) {
 ///
 /// Your application should extend [SmartArg], add public properties,
 /// and call the [SmartArg.parse()] method on your class.
+@SmartArg.reflectable
 class SmartArg {
   static const reflectable = Reflector.reflector;
 
   //
   // Public API
   //
+  @HelpArgument()
+  late bool help = false;
 
   /// List of extras supplied on the command line.
   ///

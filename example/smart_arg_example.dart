@@ -87,9 +87,6 @@ class Args extends SmartArg {
     isNegateable: true,
   )
   bool verbose = false;
-
-  @HelpArgument()
-  bool help = false;
 }
 
 void main(List<String> arguments) async {
