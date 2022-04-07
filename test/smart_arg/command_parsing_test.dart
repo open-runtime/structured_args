@@ -199,28 +199,28 @@ void main() {
       });
 
       test('executes with no arguments', () async {
-        final args = TestSimpleCommand();
+        var args = TestSimpleCommand();
         await args.parse([]);
         expect(args.verbose, null);
       });
 
       test('executes with a command', () async {
-        final args = TestSimpleCommand();
+        var args = TestSimpleCommand();
         await args.parse(['-v', 'put', '--filename=upload.txt']);
         expect(args.verbose, true);
         expect(whatExecuted, 'put-command: upload.txt');
       });
 
       test('executes with another command', () async {
-        final args = TestSimpleCommand();
+        var args = TestSimpleCommand();
         await args.parse(['-v', 'get', '--filename=download.txt']);
         expect(args.verbose, true);
         expect(whatExecuted, 'get-command: download.txt');
       });
 
       test('help appears', () {
-        final args = TestSimpleCommand();
-        final help = args.usage();
+        var args = TestSimpleCommand();
+        var help = args.usage();
 
         expect(help.contains('COMMANDS'), true);
         expect(help.contains('  get'), true);

@@ -1,8 +1,8 @@
 import 'package:collection/collection.dart';
 import 'package:recase/recase.dart';
-import 'package:smart_arg_fork/src/predicates.dart';
 
 import 'argument.dart';
+import 'predicates.dart';
 
 class EnumArgument<T> extends Argument {
   /// Gets the supplied Enum values
@@ -13,12 +13,12 @@ class EnumArgument<T> extends Argument {
   final List<T> values;
 
   const EnumArgument({
+    required this.values,
     String? short,
     dynamic long,
     String? help,
     bool? isRequired,
     String? environmentVariable,
-    required this.values,
   }) : super(
           short: short,
           long: long,
@@ -29,9 +29,9 @@ class EnumArgument<T> extends Argument {
 
   @override
   dynamic handleValue(String? key, dynamic value) {
-    final T? val = _findFirstValue(value);
+    var val = _findFirstValue(value);
     if (isNull(val)) {
-      final Iterable<String> valids = _validArgs();
+      var valids = _validArgs();
       throw ArgumentError('$key must be one of $valids');
     }
     return val;

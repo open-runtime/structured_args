@@ -7,7 +7,7 @@ String replaceLineEndings(String s, String replaceWith) {
 
 /// Gets the EOL character of [s]
 String? endOfLineOf(String s) {
-  final match = RegExp(r'\r\n|[\r\n]').firstMatch(s);
+  var match = RegExp(r'\r\n|[\r\n]').firstMatch(s);
   if (match == null) {
     return null;
   } else {
@@ -16,16 +16,15 @@ String? endOfLineOf(String s) {
 }
 
 /// Split text by EOL character
-List<String>? splitByEOL(s) {
+List<String>? splitByEOL(String s) {
   return s.split(RegExp(r'\r\n|[\r\n]'));
 }
 
 /// Hard wrap given [s] to [columns]
 String hardWrap(String s, [int columns = 80]) {
-  final eol = endOfLineOf(s) ?? '\n';
-
-  final reSplitter = RegExp(r'(\r\n|[\r\n]){2,}');
-  final paragraphs = s.split(reSplitter);
+  var eol = endOfLineOf(s) ?? '\n';
+  var reSplitter = RegExp(r'(\r\n|[\r\n]){2,}');
+  var paragraphs = s.split(reSplitter);
 
   // Local type is needed, otherwise result winds up being a
   // List<dynamic> which is incompatible with the return type.
@@ -38,9 +37,9 @@ String hardWrap(String s, [int columns = 80]) {
     p = p.trim();
     p = p.replaceAll(RegExp(r'\s{2,}'), ' ');
 
-    final reLines = RegExp('.{1,${columns - 1}}(?:\\s+|\$)|.{1,$columns}');
-    final instances = reLines.allMatches(p);
-    final lines = instances.map((v) => p.substring(v.start, v.end).trim());
+    var reLines = RegExp('.{1,${columns - 1}}(?:\\s+|\$)|.{1,$columns}');
+    var instances = reLines.allMatches(p);
+    var lines = instances.map((v) => p.substring(v.start, v.end).trim());
     result.addAll(lines);
     result.add('');
   }
@@ -49,6 +48,6 @@ String hardWrap(String s, [int columns = 80]) {
 
 /// Indent [s] by [indentCount] columns using [withChar]
 String indent(String s, int indentCount, [String withChar = ' ']) {
-  final eol = endOfLineOf(s) ?? '\n';
+  var eol = endOfLineOf(s) ?? '\n';
   return splitByEOL(s)!.map((v) => (withChar * indentCount) + v).join(eol);
 }

@@ -31,7 +31,7 @@ class Args extends SmartArg {
   late int count;
 }
 
-void main(List<String> arguments) async {
+Future<void> main(List<String> arguments) async {
   initializeReflectable();
 
   var args = Args();

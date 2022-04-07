@@ -8,7 +8,7 @@ import 'parser.dart';
 String camelToDash(String value) {
   var r = RegExp(r'(^.|[A-Z])[^A-Z]*');
   var indexes = r.allMatches(value);
-  var result = [];
+  var result = <String>[];
 
   for (var index in indexes) {
     result.add(value.substring(index.start, index.end));
@@ -48,7 +48,7 @@ class MirrorParameterPair {
 
       result.add(long);
     } else if (argument.long is String) {
-      long = argument.long;
+      long = argument.long as String;
 
       result.add(long);
     }

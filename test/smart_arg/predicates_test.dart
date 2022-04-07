@@ -19,7 +19,7 @@ void main() {
       expect(p.isNull(false), isFalse);
       expect(p.isNull(true), isFalse);
       expect(p.isNull(null), isTrue);
-      expect(p.isNull([]), isFalse);
+      expect(p.isNull(<String>[]), isFalse);
       expect(p.isNull(123), isFalse);
     });
 
@@ -27,7 +27,7 @@ void main() {
       expect(p.isNotNull(false), isTrue);
       expect(p.isNotNull(true), isTrue);
       expect(p.isNotNull(null), isFalse);
-      expect(p.isNotNull([]), isTrue);
+      expect(p.isNotNull(<String>[]), isTrue);
       expect(p.isNotNull(123), isTrue);
     });
 

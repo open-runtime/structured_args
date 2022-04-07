@@ -6,17 +6,17 @@ import 'command_example.reflectable.dart';
 
 @SmartArg.reflectable
 @Parser(description: 'get file from remote server')
-class GetCommand extends SmartArgCommand {
+class GetCommand extends SmartArg {
   @BooleanArgument(help: 'Should the file be removed after downloaded?')
   bool? removeAfterGet;
 
   @override
-  Future<void> execute(SmartArg parentArguments) async {
-    if ((parentArguments as Args).verbose == true) {
-      print('Verbose is on');
-    } else {
-      print('Verbose is off');
-    }
+  Future<void> execute() async {
+    // if ((parentArguments as Args).verbose == true) {
+    //   print('Verbose is on');
+    // } else {
+    //   print('Verbose is off');
+    // }
     print('Getting file...');
     if (removeAfterGet == true) {
       print('Removing file on remote server (not really)');
@@ -26,17 +26,17 @@ class GetCommand extends SmartArgCommand {
 
 @SmartArg.reflectable
 @Parser(description: 'put file onto remote server')
-class PutCommand extends SmartArgCommand {
+class PutCommand extends SmartArg {
   @BooleanArgument(help: 'Should the file be removed locally after downloaded?')
   bool? removeAfterPut;
 
   @override
-  Future<void> execute(SmartArg parentArguments) async {
-    if ((parentArguments as Args).verbose == true) {
-      print('Verbose is on');
-    } else {
-      print('Verbose is off');
-    }
+  Future<void> execute() async {
+    // if ((parentArguments as Args).verbose == true) {
+    //   print('Verbose is on');
+    // } else {
+    //   print('Verbose is off');
+    // }
 
     print('Putting file...');
 
@@ -67,7 +67,7 @@ class Args extends SmartArg {
   PutCommand? put;
 }
 
-void main(List<String> arguments) async {
+Future<void> main(List<String> arguments) async {
   initializeReflectable();
 
   var args = Args();

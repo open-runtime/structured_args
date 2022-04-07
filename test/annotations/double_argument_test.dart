@@ -5,21 +5,21 @@ void main() {
   group('DoubleArgument', () {
     group('handleValue', () {
       test('simple value', () {
-        final arg = DoubleArgument();
+        var arg = DoubleArgument();
 
         expect(arg.handleValue('key', '300'), 300);
       });
 
       group('minimum/maximum', () {
         test('in range', () {
-          final arg = DoubleArgument(minimum: 99.9, maximum: 499.9);
+          var arg = DoubleArgument(minimum: 99.9, maximum: 499.9);
           expect(arg.handleValue('key', '300.0'), 300.0);
         });
 
         test('too low', () {
           try {
-            final arg = DoubleArgument(minimum: 99.9, maximum: 499.9);
-            final _ = arg.handleValue('key', '99.8');
+            var arg = DoubleArgument(minimum: 99.9, maximum: 499.9);
+            var _ = arg.handleValue('key', '99.8');
 
             fail('value lower than minimum should have thrown an exception');
           } on ArgumentError {
@@ -29,8 +29,8 @@ void main() {
 
         test('too high', () {
           try {
-            final arg = DoubleArgument(minimum: 99.9, maximum: 499.9);
-            final _ = arg.handleValue('key', '499.91');
+            var arg = DoubleArgument(minimum: 99.9, maximum: 499.9);
+            var _ = arg.handleValue('key', '499.91');
 
             fail('value higher than maximum should have thrown an exception');
           } on ArgumentError {

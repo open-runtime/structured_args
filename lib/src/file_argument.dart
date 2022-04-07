@@ -30,8 +30,8 @@ class FileArgument extends Argument {
 
   @override
   File handleValue(String? key, dynamic value) {
-    var normalizedAbsolutePath = path.normalize(path.absolute(value));
-    final File result = File(normalizedAbsolutePath);
+    var normalizedAbsolutePath = path.normalize(path.absolute(value as String));
+    var result = File(normalizedAbsolutePath);
 
     if (mustExist) {
       if (result.existsSync() == false) {

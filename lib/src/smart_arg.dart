@@ -4,7 +4,6 @@ import 'dart:io';
 
 import 'package:collection/collection.dart' show IterableExtension;
 import 'package:reflectable/reflectable.dart';
-import 'package:smart_arg_fork/src/predicates.dart';
 
 import 'argument.dart';
 import 'command.dart';
@@ -12,6 +11,7 @@ import 'group.dart';
 import 'help_argument.dart';
 import 'mirror_argument_pair.dart';
 import 'parser.dart';
+import 'predicates.dart';
 import 'reflector.dart';
 import 'string_utils.dart';
 

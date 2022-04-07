@@ -11,21 +11,21 @@ mixin DockerImageArg {
 
 @SmartArg.reflectable
 @Parser(description: 'Pulls a Docker Image')
-class DockerPullCommand extends SmartArgCommand with DockerImageArg {
+class DockerPullCommand extends SmartArg with DockerImageArg {
   @override
-  Future<void> execute(SmartArg parentArguments) async {
+  Future<void> execute() async {
     print('\$ docker pull $image');
   }
 }
 
 @SmartArg.reflectable
 @Parser(description: 'Runs a Docker Image')
-class DockerRunCommand extends SmartArgCommand with DockerImageArg {
+class DockerRunCommand extends SmartArg with DockerImageArg {
   @BooleanArgument(help: 'Pull image before running')
   bool pull = false;
 
   @override
-  Future<void> execute(SmartArg parentArguments) async {
+  Future<void> execute() async {
     print('\$ docker run${pull ? ' --pull' : ''} $image');
   }
 }
@@ -34,7 +34,7 @@ enum Status { running, stopped, all }
 
 @SmartArg.reflectable
 @Parser(description: 'Lists Docker Images')
-class DockerListCommand extends SmartArgCommand with DockerImageArg {
+class DockerListCommand extends SmartArg with DockerImageArg {
   @EnumArgument<Status>(
     help: 'Docker Image Status',
     values: Status.values,
@@ -42,7 +42,7 @@ class DockerListCommand extends SmartArgCommand with DockerImageArg {
   late Status status = Status.all;
 
   @override
-  Future<void> execute(SmartArg parentArguments) async {
+  Future<void> execute() async {
     print('\$ docker ps --status $status');
   }
 }
@@ -65,7 +65,7 @@ class Args extends SmartArg {
   DockerListCommand? list;
 }
 
-void main(List<String> arguments) async {
+Future<void> main(List<String> arguments) async {
   initializeReflectable();
   var args = Args();
   await args.parse(arguments);

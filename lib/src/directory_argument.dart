@@ -30,8 +30,8 @@ class DirectoryArgument extends Argument {
 
   @override
   Directory handleValue(String? key, dynamic value) {
-    var normalizedAbsolutePath = path.normalize(path.absolute(value));
-    final Directory result = Directory(normalizedAbsolutePath);
+    var normalizedAbsolutePath = path.normalize(path.absolute(value as String));
+    var result = Directory(normalizedAbsolutePath);
 
     if (mustExist) {
       if (result.existsSync() == false) {

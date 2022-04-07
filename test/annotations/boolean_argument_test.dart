@@ -24,7 +24,7 @@ void main() {
 
     test('special keys with non-negate', () {
       var args = BooleanArgument(short: 'v', long: 'verbose');
-      expect(args.specialKeys('v', 'verbose'), []);
+      expect(args.specialKeys('v', 'verbose'), <String>[]);
     });
 
     test('special keys with negate', () {

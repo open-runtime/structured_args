@@ -89,7 +89,7 @@ class Args extends SmartArg {
   bool verbose = false;
 }
 
-void main(List<String> arguments) async {
+Future<void> main(List<String> arguments) async {
   initializeReflectable();
 
   var args = Args();

@@ -25,7 +25,7 @@ class IntegerArgument extends Argument {
 
   @override
   int? handleValue(String? key, dynamic value) {
-    var result = int.tryParse(value);
+    var result = int.tryParse(value as String);
 
     if (minimum != null && result! < minimum!) {
       throw ArgumentError('$key must be at least $minimum');

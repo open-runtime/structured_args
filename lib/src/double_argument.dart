@@ -25,7 +25,7 @@ class DoubleArgument extends Argument {
 
   @override
   double? handleValue(String? key, dynamic value) {
-    var result = double.tryParse(value);
+    var result = double.tryParse(value as String);
 
     if (minimum != null && result! < minimum!) {
       throw ArgumentError('$key must be at least $minimum');
