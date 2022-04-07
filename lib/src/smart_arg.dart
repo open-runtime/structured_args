@@ -33,7 +33,7 @@ class ParsedResult {
         commandArguments = null;
 }
 
-String? _argumentHelp(final MirrorParameterPair mpp) {
+String? _argumentHelp(MirrorParameterPair mpp) {
   return mpp.argument.help ??
       (mpp.mirror.type.metadata
                   .firstWhereOrNull((element) => element.runtimeType == Parser)
@@ -76,8 +76,7 @@ class SmartArg {
   /// system [Platform.environment] on unless provided otherwise.
   late Map<String, String> _environment = Platform.environment;
 
-  /// The Parent [SmartArg], or [SmartArg] instance for the current
-  /// subcommand.
+  /// The Parent [SmartArg] instance for the current subcommand.
   SmartArg? parent;
 
   /// Recursively walks the [classMirror] and it's associated
@@ -103,7 +102,7 @@ class SmartArg {
   }
 
   SmartArg() {
-    final instanceMirror = reflectable.reflect(this);
+    var instanceMirror = reflectable.reflect(this);
 
     // Find our app meta data (if any)
     _app =
@@ -117,20 +116,19 @@ class SmartArg {
 
     {
       Group? currentGroup;
-      for (final mirror in _walkDeclarations(instanceMirror.type)) {
+      for (var mirror in _walkDeclarations(instanceMirror.type)) {
         currentGroup =
             mirror.metadata.firstWhereOrNull((m) => m is Group) as Group? ??
                 currentGroup;
 
-        final parameter =
-            mirror.metadata.firstWhereOrNull((m) => m is Argument);
+        var parameter = mirror.metadata.firstWhereOrNull((m) => m is Argument);
         if (parameter != null) {
-          final mpp = MirrorParameterPair(
+          var mpp = MirrorParameterPair(
             mirror as VariableMirror,
             parameter as Argument,
             currentGroup,
           );
-          for (final key in mpp.keys(_app)) {
+          for (var key in mpp.keys(_app)) {
             if (_values.containsKey(key)) {
               throw StateError('$key was configured multiple times');
             }
@@ -179,13 +177,13 @@ class SmartArg {
     _arguments = arguments;
     await preCommandParse(arguments);
     try {
-      final ParsedResult result = _parse(arguments);
+      var result = _parse(arguments);
       if (isNotNull(result.command)) {
-        final a = result.command!.mirror;
-        final b = a.type as ClassMirror;
+        var a = result.command!.mirror;
+        var b = a.type as ClassMirror;
 
         /// Construct the new command
-        final command = b.newInstance('', []) as SmartArg;
+        var command = b.newInstance('', []) as SmartArg;
         command.parent = this;
         await command.parse(result.commandArguments ?? []);
       } else if (result.success) {
@@ -225,9 +223,9 @@ class SmartArg {
     List<Group?> helpGroups = [];
     List<List<String>> helpDescriptions = [];
 
-    final arguments =
+    var arguments =
         _mirrorParameterPairs.where((v) => isFalse(v.argument is Command));
-    final commands = _mirrorParameterPairs.where((v) => v.argument is Command);
+    var commands = _mirrorParameterPairs.where((v) => v.argument is Command);
 
     if (arguments.isNotEmpty) {
       for (var mpp in arguments) {
@@ -255,7 +253,7 @@ class SmartArg {
 
     const lineIndent = 2;
     const lineWidth = 80 - lineIndent;
-    final linePrefix = ' ' * lineIndent;
+    var linePrefix = ' ' * lineIndent;
     const optionColumnWidth = 25;
     const helpLineWidth = lineWidth - optionColumnWidth;
 
@@ -275,7 +273,7 @@ class SmartArg {
       Group? currentGroup;
 
       for (var i = 0; i < helpKeys.length; i++) {
-        final thisGroup = helpGroups[i];
+        var thisGroup = helpGroups[i];
 
         if (thisGroup != currentGroup) {
           trailingHelp(currentGroup);
@@ -327,8 +325,8 @@ class SmartArg {
       List<MirrorParameterPair>.from(commands)
           .sortedBy((mpp) => mpp.displayKey!)
           .forEach((mpp) {
-        final String? help = _argumentHelp(mpp);
-        final commandDisplay = '$linePrefix${mpp.displayKey!}';
+        String? help = _argumentHelp(mpp);
+        var commandDisplay = '$linePrefix${mpp.displayKey!}';
         var commandHelp = hardWrap(
           help ?? '',
           helpLineWidth,
@@ -348,7 +346,7 @@ class SmartArg {
     }
 
     if (isNotNull(_app?.extendedHelp)) {
-      for (final eh in _app!.extendedHelp!) {
+      for (var eh in _app!.extendedHelp!) {
         if (isNull(eh.help)) {
           throw StateError('Help.help must be set');
         }
@@ -383,18 +381,17 @@ class SmartArg {
   late List<MirrorParameterPair> _mirrorParameterPairs;
 
   bool _isStacked(String value) {
-    final isSingleDash = value.startsWith('-') && !value.startsWith('--');
-    final isLongerThanShort = value.length > 2;
-    final isAssignment = isLongerThanShort && value.substring(2, 3) == '=';
-
+    var isSingleDash = value.startsWith('-') && !value.startsWith('--');
+    var isLongerThanShort = value.length > 2;
+    var isAssignment = isLongerThanShort && value.substring(2, 3) == '=';
     return isSingleDash && !isAssignment && isLongerThanShort;
   }
 
   List<String> _rewriteArguments(List<String> arguments) {
     List<String> result = [];
-    for (final arg in arguments) {
+    for (var arg in arguments) {
       if (_isStacked(arg)) {
-        final individualArgs = arg.split('').skip(1).map((v) => '-$v').toList();
+        var individualArgs = arg.split('').skip(1).map((v) => '-$v').toList();
 
         result.addAll(individualArgs);
       } else {
@@ -406,8 +403,8 @@ class SmartArg {
   }
 
   ParsedResult _parse(List<String> arguments) {
-    final instanceMirror = reflectable.reflect(this);
-    final List<String> expandedArguments = _rewriteArguments(arguments);
+    var instanceMirror = reflectable.reflect(this);
+    var expandedArguments = _rewriteArguments(arguments);
 
     int argumentIndex = 0;
     while (argumentIndex < expandedArguments.length) {
@@ -421,8 +418,8 @@ class SmartArg {
         return ParsedResult.success();
       } else if (isFalse(argument.startsWith('-'))) {
         if (_commands.containsKey(argument)) {
-          final command = _commands[argument]!;
-          final commandArguments = arguments.skip(argumentIndex).toList();
+          var command = _commands[argument]!;
+          var commandArguments = arguments.skip(argumentIndex).toList();
           return ParsedResult(
             command: command,
             commandArguments: commandArguments,
@@ -556,12 +553,12 @@ class SmartArg {
 
   void _validate() {
     // Check to see if we have any required arguments missing
-    final List<String?> isMissing = [];
-    final instanceMirror = reflectable.reflect(this);
+    List<String?> isMissing = [];
+    var instanceMirror = reflectable.reflect(this);
 
     for (var mpp in _mirrorParameterPairs) {
       var argumentName = mpp.displayKey;
-      final String? envVar = mpp.argument.environmentVariable;
+      String? envVar = mpp.argument.environmentVariable;
       if (isFalse(_argumentWasSet(argumentName)) && isNotBlank(envVar)) {
         String? envVarValue = _environment[envVar];
         if (isNotBlank(envVarValue)) {
