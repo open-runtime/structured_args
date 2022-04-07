@@ -6,7 +6,7 @@ import 'advanced_command_example.reflectable.dart';
 @SmartArg.reflectable
 mixin DockerImageArg {
   @StringArgument(help: 'Docker Image')
-  String? image = 'dart:stable';
+  late String image = 'dart:stable';
 }
 
 @SmartArg.reflectable
@@ -53,16 +53,16 @@ class DockerListCommand extends SmartArg with DockerImageArg {
 )
 class Args extends SmartArg {
   @BooleanArgument(short: 'v', help: 'Verbose mode')
-  bool? verbose;
+  late bool verbose = false;
 
   @Command()
-  DockerPullCommand? pull;
+  late DockerPullCommand pull;
 
   @Command()
-  DockerRunCommand? run;
+  late DockerRunCommand run;
 
   @Command()
-  DockerListCommand? list;
+  late DockerListCommand list;
 }
 
 Future<void> main(List<String> arguments) async {

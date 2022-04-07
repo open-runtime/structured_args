@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:smart_arg_fork/smart_arg_fork.dart';
 
 import 'readme_example.reflectable.dart';
@@ -33,14 +31,8 @@ class Args extends SmartArg {
 
 Future<void> main(List<String> arguments) async {
   initializeReflectable();
-
   var args = Args();
   await args.parse(arguments);
-  if (args.help) {
-    print(args.usage());
-    exit(0);
-  }
-
   for (var i = 0; i < args.count; i++) {
     print('${args.greeting}, ${args.name}!');
   }

@@ -8,7 +8,7 @@ import 'command_example.reflectable.dart';
 @Parser(description: 'get file from remote server')
 class GetCommand extends SmartArg {
   @BooleanArgument(help: 'Should the file be removed after downloaded?')
-  bool? removeAfterGet;
+  late bool removeAfterGet = false;
 
   @override
   Future<void> execute() async {
@@ -28,15 +28,15 @@ class GetCommand extends SmartArg {
 @Parser(description: 'put file onto remote server')
 class PutCommand extends SmartArg {
   @BooleanArgument(help: 'Should the file be removed locally after downloaded?')
-  bool? removeAfterPut;
+  late bool removeAfterPut = false;
 
   @override
   Future<void> execute() async {
-    // if ((parentArguments as Args).verbose == true) {
-    //   print('Verbose is on');
-    // } else {
-    //   print('Verbose is off');
-    // }
+    if ((parent as Args).verbose) {
+      print('Verbose is on');
+    } else {
+      print('Verbose is off');
+    }
 
     print('Putting file...');
 
@@ -58,13 +58,13 @@ class PutCommand extends SmartArg {
 )
 class Args extends SmartArg {
   @BooleanArgument(short: 'v', help: 'Verbose mode')
-  bool? verbose;
+  late bool verbose = false;
 
   @Command(help: 'Get a file from the remote server')
-  GetCommand? get;
+  late GetCommand get;
 
   @Command(help: 'Put a file on the remote server')
-  PutCommand? put;
+  late PutCommand put;
 }
 
 Future<void> main(List<String> arguments) async {
