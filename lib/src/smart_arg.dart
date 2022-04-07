@@ -18,18 +18,11 @@ import 'string_utils.dart';
 class ParsedResult {
   final MirrorParameterPair? command;
   final List<String>? commandArguments;
-  final bool success;
 
-  const ParsedResult({this.command, this.commandArguments}) : success = true;
+  const ParsedResult({this.command, this.commandArguments});
 
   const ParsedResult.success()
-      : success = true,
-        command = null,
-        commandArguments = null;
-
-  const ParsedResult.failure()
-      : success = false,
-        command = null,
+      : command = null,
         commandArguments = null;
 }
 
@@ -186,11 +179,12 @@ class SmartArg {
         var command = b.newInstance('', []) as SmartArg;
         command.parent = this;
         await command.parse(result.commandArguments ?? []);
-      } else if (result.success) {
+      } else {
         _validate();
         await _runAfterParse();
         if (help) {
-          print(usage);
+          print(usage());
+          exit(0);
         } else {
           await _runPreCommandExecute();
           await execute();
@@ -464,13 +458,7 @@ class SmartArg {
       }
 
       _trySetValue(instanceMirror, argumentName, value);
-
-      if (argumentConfiguration.argument is HelpArgument) {
-        _extras!.addAll(expandedArguments.skip(argumentIndex));
-        return ParsedResult.failure();
-      }
     }
-
     return ParsedResult.success();
   }
 
@@ -571,6 +559,8 @@ class SmartArg {
         isMissing.add(mpp.displayKey);
       }
     }
+
+    if (help) return;
 
     if (isMissing.isNotEmpty) {
       throw ArgumentError(
