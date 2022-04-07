@@ -556,8 +556,7 @@ class SmartArg {
   _runAfterCommandParsingChain(SmartArg command, List<String> arguments) async {
     SmartArg? cmd = command;
     while (isNotNull(cmd)) {
-      cmd!.afterCommandParse(command, arguments);
-      await cmd.postCommandParse(command, arguments);
+      await cmd!.postCommandParse(command, arguments);
       cmd = cmd.parent;
     }
   }
@@ -572,13 +571,11 @@ class SmartArg {
     var ittr = commands.reversed.iterator;
     var currentCmd = command;
     while (ittr.moveNext()) {
-      ittr.current.beforeCommandExecute(currentCmd);
       await ittr.current.preCommandExecute(currentCmd);
       if (ittr.current is SmartArgCommand) {
         currentCmd = ittr.current as SmartArgCommand;
       }
     }
-    command.beforeCommandExecute(command);
     await command.preCommandExecute(command);
   }
 
@@ -594,10 +591,8 @@ class SmartArg {
     command.parent = this;
     final subcommands = command._commands;
     if (isNull(parent)) {
-      beforeCommandParse(command, arguments);
       await preCommandParse(command, arguments);
     }
-    command.beforeCommandParse(command, arguments);
     await command.preCommandParse(command, arguments);
 
     await command.parse(arguments);
@@ -609,10 +604,8 @@ class SmartArg {
         await _runAfterCommandParsingChain(command, arguments);
         await _runBeforeCommandExecuteChain(command);
         await command.execute(this);
-        command.afterCommandExecute(command);
         await command.postCommandExecute(command);
       }
-      afterCommandExecute(command);
       await postCommandExecute(command);
     }
   }
@@ -626,22 +619,6 @@ class SmartArg {
   void withEnvironment(Map<String, String> environment) {
     _environment = environment;
   }
-
-  /// Invoked before an annotated [Command] parsing has started.
-  @Deprecated('use [preCommandParse] instead')
-  void beforeCommandParse(SmartArg command, List<String> arguments) {}
-
-  /// Invoked after the [Command] parsing has completed.
-  @Deprecated('use [postCommandParse] instead')
-  void afterCommandParse(SmartArg command, List<String> arguments) {}
-
-  /// Invoked before a [SmartArgCommand] is executed
-  @Deprecated('use [preCommandExecute] instead')
-  void beforeCommandExecute(SmartArgCommand command) {}
-
-  /// Invoked after a [SmartArgCommand] is executed
-  @Deprecated('use [postCommandExecute] instead')
-  void afterCommandExecute(SmartArgCommand command) {}
 
   /// Awaited before an annotated [Command] parsing has started.
   Future<void> preCommandParse(SmartArg command, List<String> arguments) =>

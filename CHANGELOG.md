@@ -1,3 +1,8 @@
+## 4.0.0 - Unreleased
+
+- Removed:
+  - non-async command hooks in favour of the async counterparts
+
 ## 3.1.0
 
 - Added:
