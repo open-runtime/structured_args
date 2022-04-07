@@ -13,7 +13,6 @@ import 'help_argument.dart';
 import 'mirror_argument_pair.dart';
 import 'parser.dart';
 import 'reflector.dart';
-import 'smart_arg_command.dart';
 import 'string_utils.dart';
 
 class ParsedResult {
@@ -77,7 +76,7 @@ class SmartArg {
   /// system [Platform.environment] on unless provided otherwise.
   late Map<String, String> _environment = Platform.environment;
 
-  /// The Parent [SmartArg], or [SmartArgCommand] instance for the current
+  /// The Parent [SmartArg], or [SmartArg] instance for the current
   /// subcommand.
   SmartArg? parent;
 
@@ -146,6 +145,29 @@ class SmartArg {
     }
   }
 
+  late List<String> _arguments;
+
+  Future<void> _runAfterParse() async {
+    await postCommandParse(_arguments);
+    if (isNotNull(parent)) {
+      await parent!._runAfterParse();
+    }
+  }
+
+  Future<void> _runPreCommandExecute() async {
+    if (isNotNull(parent)) {
+      await parent!._runPreCommandExecute();
+    }
+    await preCommandExecute();
+  }
+
+  Future<void> _runPostCommandExecute() async {
+    await postCommandExecute();
+    if (isNotNull(parent)) {
+      await parent!._runPostCommandExecute();
+    }
+  }
+
   /// Parse the [arguments] list populating properties on the [SmartArg] class.
   ///
   /// If [Parser.exitOnFailure] is set to true, this function will call
@@ -154,13 +176,28 @@ class SmartArg {
   /// [usage()].
   Future<void> parse(List<String> arguments) async {
     _resetParser();
-
+    _arguments = arguments;
+    await preCommandParse(arguments);
     try {
       final ParsedResult result = _parse(arguments);
       if (isNotNull(result.command)) {
-        await _launchCommand(result.command!, result.commandArguments ?? []);
+        final a = result.command!.mirror;
+        final b = a.type as ClassMirror;
+
+        /// Construct the new command
+        final command = b.newInstance('', []) as SmartArg;
+        command.parent = this;
+        await command.parse(result.commandArguments ?? []);
       } else if (result.success) {
         _validate();
+        await _runAfterParse();
+        if (help) {
+          print(usage);
+        } else {
+          await _runPreCommandExecute();
+          await execute();
+          await _runPostCommandExecute();
+        }
       }
     } on ArgumentError catch (e) {
       if (isTrue(_app?.exitOnFailure)) {
@@ -171,7 +208,6 @@ class SmartArg {
         }
         exit(1);
       }
-
       rethrow;
     }
   }
@@ -558,63 +594,6 @@ class SmartArg {
     }
   }
 
-  _runAfterCommandParsingChain(SmartArg command, List<String> arguments) async {
-    SmartArg? cmd = command;
-    while (isNotNull(cmd)) {
-      await cmd!.postCommandParse(command, arguments);
-      cmd = cmd.parent;
-    }
-  }
-
-  _runBeforeCommandExecuteChain(SmartArgCommand command) async {
-    List<SmartArg> commands = [];
-    SmartArg? cmd = command.parent;
-    while (isNotNull(cmd)) {
-      commands.add(cmd!);
-      cmd = cmd.parent;
-    }
-    var ittr = commands.reversed.iterator;
-    var currentCmd = command;
-    while (ittr.moveNext()) {
-      await ittr.current.preCommandExecute(currentCmd);
-      if (ittr.current is SmartArgCommand) {
-        currentCmd = ittr.current as SmartArgCommand;
-      }
-    }
-    await command.preCommandExecute(command);
-  }
-
-  Future<void> _launchCommand(
-    MirrorParameterPair commandMpp,
-    List<String> arguments,
-  ) async {
-    final a = commandMpp.mirror;
-    final b = a.type as ClassMirror;
-
-    /// Construct the new command
-    final command = b.newInstance('', []) as SmartArg;
-    command.parent = this;
-    final subcommands = command._commands;
-    if (isNull(parent)) {
-      await preCommandParse(command, arguments);
-    }
-    await command.preCommandParse(command, arguments);
-
-    await command.parse(arguments);
-
-    if (command is SmartArgCommand) {
-      //Process as an actual command
-      if (arguments.isEmpty ||
-          isFalse(subcommands.containsKey(arguments.first))) {
-        await _runAfterCommandParsingChain(command, arguments);
-        await _runBeforeCommandExecuteChain(command);
-        await command.execute(this);
-        await command.postCommandExecute(command);
-      }
-      await postCommandExecute(command);
-    }
-  }
-
   void _resetParser() {
     _wasSet = {};
     _extras = [];
@@ -626,16 +605,16 @@ class SmartArg {
   }
 
   /// Awaited before an annotated [Command] parsing has started.
-  Future<void> preCommandParse(SmartArg command, List<String> arguments) =>
-      Future.value();
+  Future<void> preCommandParse(List<String> arguments) => Future.value();
 
   /// Awaited after the [Command] parsing has completed.
-  Future<void> postCommandParse(SmartArg command, List<String> arguments) =>
-      Future.value();
+  Future<void> postCommandParse(List<String> arguments) => Future.value();
 
-  /// Awaited before a [SmartArgCommand] is executed
-  Future<void> preCommandExecute(SmartArgCommand command) => Future.value();
+  /// Awaited before a [SmartArg] is executed
+  Future<void> preCommandExecute() => Future.value();
 
-  /// Awaited after a [SmartArgCommand] is executed
-  Future<void> postCommandExecute(SmartArgCommand command) => Future.value();
+  /// Awaited after a [SmartArg] is executed
+  Future<void> postCommandExecute() => Future.value();
+
+  Future<void> execute() => Future.value();
 }

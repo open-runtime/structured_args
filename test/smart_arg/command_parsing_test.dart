@@ -9,24 +9,24 @@ String? whatExecuted;
 
 @SmartArg.reflectable
 @Parser(exitOnFailure: false, description: 'put command')
-class PutCommand extends SmartArgCommand {
+class PutCommand extends SmartArg {
   @StringArgument()
   String? filename;
 
   @override
-  Future<void> execute(SmartArg parentArguments) async {
+  Future<void> execute() async {
     whatExecuted = 'put-command: $filename';
   }
 }
 
 @SmartArg.reflectable
 @Parser(exitOnFailure: false, description: 'Get a file from a remote host')
-class GetCommand extends SmartArgCommand {
+class GetCommand extends SmartArg {
   @StringArgument()
   String? filename;
 
   @override
-  Future<void> execute(SmartArg parentArguments) async {
+  Future<void> execute() async {
     whatExecuted = 'get-command: $filename';
   }
 }
@@ -46,31 +46,23 @@ class TestSimpleCommand extends SmartArg {
   List<String> hookOrder = [];
 
   @override
-  Future<void> preCommandParse(SmartArg command, List<String> arguments) {
-    var val = super.preCommandParse(command, arguments);
+  Future<void> preCommandParse(List<String> arguments) async {
     hookOrder.add('preCommandParse');
-    return val;
   }
 
   @override
-  Future<void> postCommandParse(SmartArg command, List<String> arguments) {
-    var val = super.postCommandParse(command, arguments);
+  Future<void> postCommandParse(List<String> arguments) async {
     hookOrder.add('postCommandParse');
-    return val;
   }
 
   @override
-  Future<void> preCommandExecute(SmartArgCommand command) {
-    var val = super.preCommandExecute(command);
+  Future<void> preCommandExecute() async {
     hookOrder.add('preCommandExecute');
-    return val;
   }
 
   @override
-  Future<void> postCommandExecute(SmartArgCommand command) {
-    var val = super.postCommandExecute(command);
+  Future<void> postCommandExecute() async {
     hookOrder.add('postCommandExecute');
-    return val;
   }
 }
 
@@ -78,7 +70,7 @@ List<String> subcommandHookOrder = [];
 
 @SmartArg.reflectable
 @Parser(exitOnFailure: false, description: 'The Child Command')
-class ChildCommand extends SmartArgCommand {
+class ChildCommand extends SmartArg {
   @StringArgument()
   String? aValue;
 
@@ -86,43 +78,35 @@ class ChildCommand extends SmartArgCommand {
   late ChildCommand child;
 
   @override
-  Future<void> execute(SmartArg parentArguments) async {
+  Future<void> execute() async {
     whatExecuted = 'ChildCommand: $aValue';
     subcommandHookOrder.add('ChildExecute');
   }
 
   @override
-  Future<void> preCommandParse(SmartArg command, List<String> arguments) {
-    var val = super.preCommandParse(command, arguments);
+  Future<void> preCommandParse(List<String> arguments) async {
     subcommandHookOrder.add('preChildCommandParse');
-    return val;
   }
 
   @override
-  Future<void> postCommandParse(SmartArg command, List<String> arguments) {
-    var val = super.postCommandParse(command, arguments);
+  Future<void> postCommandParse(List<String> arguments) async {
     subcommandHookOrder.add('postChildCommandParse');
-    return val;
   }
 
   @override
-  Future<void> preCommandExecute(SmartArgCommand command) {
-    var val = super.preCommandExecute(command);
+  Future<void> preCommandExecute() async {
     subcommandHookOrder.add('preChildCommandExecute');
-    return val;
   }
 
   @override
-  Future<void> postCommandExecute(SmartArgCommand command) {
-    var val = super.postCommandExecute(command);
+  Future<void> postCommandExecute() async {
     subcommandHookOrder.add('postChildCommandExecute');
-    return val;
   }
 }
 
 @SmartArg.reflectable
 @Parser(exitOnFailure: false, description: 'The Father Command')
-class FatherCommand extends SmartArgCommand {
+class FatherCommand extends SmartArg {
   @StringArgument()
   String? aValue;
 
@@ -130,37 +114,29 @@ class FatherCommand extends SmartArgCommand {
   late ChildCommand child;
 
   @override
-  Future<void> execute(SmartArg parentArguments) async {
+  Future<void> execute() async {
     whatExecuted = 'FatherCommand: $aValue';
     subcommandHookOrder.add('FatherExecute');
   }
 
   @override
-  Future<void> preCommandParse(SmartArg command, List<String> arguments) {
-    var val = super.preCommandParse(command, arguments);
+  Future<void> preCommandParse(List<String> arguments) async {
     subcommandHookOrder.add('preFatherCommandParse');
-    return val;
   }
 
   @override
-  Future<void> postCommandParse(SmartArg command, List<String> arguments) {
-    var val = super.postCommandParse(command, arguments);
+  Future<void> postCommandParse(List<String> arguments) async {
     subcommandHookOrder.add('postFatherCommandParse');
-    return val;
   }
 
   @override
-  Future<void> preCommandExecute(SmartArgCommand command) {
-    var val = super.preCommandExecute(command);
+  Future<void> preCommandExecute() async {
     subcommandHookOrder.add('preFatherCommandExecute');
-    return val;
   }
 
   @override
-  Future<void> postCommandExecute(SmartArgCommand command) {
-    var val = super.postCommandExecute(command);
+  Future<void> postCommandExecute() async {
     subcommandHookOrder.add('postFatherCommandExecute');
-    return val;
   }
 }
 
@@ -180,31 +156,23 @@ class GrandFatherCommand extends SmartArg {
   late GrandFatherCommand grandFather;
 
   @override
-  Future<void> preCommandParse(SmartArg command, List<String> arguments) {
-    var val = super.preCommandParse(command, arguments);
+  Future<void> preCommandParse(List<String> arguments) async {
     subcommandHookOrder.add('preGrandFatherCommandParse');
-    return val;
   }
 
   @override
-  Future<void> postCommandParse(SmartArg command, List<String> arguments) {
-    var val = super.postCommandParse(command, arguments);
+  Future<void> postCommandParse(List<String> arguments) async {
     subcommandHookOrder.add('postGrandFatherCommandParse');
-    return val;
   }
 
   @override
-  Future<void> preCommandExecute(SmartArgCommand command) {
-    var val = super.preCommandExecute(command);
+  Future<void> preCommandExecute() async {
     subcommandHookOrder.add('preGrandFatherCommandExecute');
-    return val;
   }
 
   @override
-  Future<void> postCommandExecute(SmartArgCommand command) {
-    var val = super.postCommandExecute(command);
+  Future<void> postCommandExecute() async {
     subcommandHookOrder.add('postGrandFatherCommandExecute');
-    return val;
   }
 }
 
@@ -367,6 +335,7 @@ void main() {
           'preFatherCommandExecute',
           'FatherExecute',
           'postFatherCommandExecute',
+          'postGrandFatherCommandExecute',
           'postGrandFatherCommandExecute'
         ]);
       });
