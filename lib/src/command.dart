@@ -14,3 +14,15 @@ class Command extends Argument {
   @override
   void handleValue(String? key, value) {}
 }
+
+class DefaultCommand extends Command {
+  const DefaultCommand({
+    String? short,
+    dynamic long,
+    String? help,
+  }) : super(
+          short: short,
+          long: long,
+          help: help,
+        );
+}

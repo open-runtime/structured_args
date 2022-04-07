@@ -105,6 +105,7 @@ class SmartArg {
     // to their corresponding Parameter configurations.
     _values = {};
     _commands = {};
+    _defaultCommand;
     _mirrorParameterPairs = [];
 
     {
@@ -130,6 +131,12 @@ class SmartArg {
           _mirrorParameterPairs.add(mpp);
           if (parameter is Command) {
             _commands[mpp.displayKey] = mpp;
+          }
+          if (parameter is DefaultCommand) {
+            if (isNotNull(_defaultCommand)) {
+              throw ArgumentError('SmartArg can only have one DefaultCommand');
+            }
+            _defaultCommand = mpp;
           }
         }
       }
@@ -159,6 +166,16 @@ class SmartArg {
     }
   }
 
+  SmartArg _construct(MirrorParameterPair mpp) {
+    var a = mpp.mirror;
+    var b = a.type as ClassMirror;
+
+    /// Construct the new command
+    var command = b.newInstance('', []) as SmartArg;
+    command.parent = this;
+    return command;
+  }
+
   /// Parse the [arguments] list populating properties on the [SmartArg] class.
   ///
   /// If [Parser.exitOnFailure] is set to true, this function will call
@@ -172,13 +189,7 @@ class SmartArg {
     try {
       var result = _parse(arguments);
       if (isNotNull(result.command)) {
-        var a = result.command!.mirror;
-        var b = a.type as ClassMirror;
-
-        /// Construct the new command
-        var command = b.newInstance('', []) as SmartArg;
-        command.parent = this;
-        await command.parse(result.commandArguments ?? []);
+        await _construct(result.command!).parse(result.commandArguments ?? []);
       } else {
         _validate();
         await _runAfterParse();
@@ -321,8 +332,9 @@ class SmartArg {
           .forEach((mpp) {
         String? help = _argumentHelp(mpp);
         var commandDisplay = '$linePrefix${mpp.displayKey!}';
+        var suffix = (mpp.argument is DefaultCommand) ? ' [DEFAULT]' : '';
         var commandHelp = hardWrap(
-          help ?? '',
+          (help ?? '') + suffix,
           helpLineWidth,
         );
         commandHelp = indent(commandHelp, optionColumnWidth);
@@ -368,6 +380,7 @@ class SmartArg {
   Parser? _app;
   late Map<String?, MirrorParameterPair> _values;
   late Map<String?, MirrorParameterPair> _commands;
+  MirrorParameterPair? _defaultCommand;
   List<String>? _extras;
   late Set<String?> _wasSet;
 
@@ -440,24 +453,28 @@ class SmartArg {
         argumentName = argumentName.substring(2);
       }
 
+      if (isNotNull(_defaultCommand)) {
+        continue;
+      }
+
       // Find our argument configuration
       var argumentConfiguration = _values[argumentName];
       if (isNull(argumentConfiguration)) {
         throw ArgumentError('$originalArgument is invalid');
-      }
+      } else {
+        if (argumentConfiguration!.argument.needsValue && !hasValueViaEqual) {
+          if (argumentIndex >= expandedArguments.length) {
+            throw ArgumentError(
+              '${argumentConfiguration.displayKey} expects a value but none was supplied.',
+            );
+          }
 
-      if (argumentConfiguration!.argument.needsValue && !hasValueViaEqual) {
-        if (argumentIndex >= expandedArguments.length) {
-          throw ArgumentError(
-            '${argumentConfiguration.displayKey} expects a value but none was supplied.',
-          );
+          value = expandedArguments[argumentIndex];
+          argumentIndex++;
         }
 
-        value = expandedArguments[argumentIndex];
-        argumentIndex++;
+        _trySetValue(instanceMirror, argumentName, value);
       }
-
-      _trySetValue(instanceMirror, argumentName, value);
     }
     return ParsedResult.success();
   }
@@ -603,5 +620,11 @@ class SmartArg {
   /// Awaited after a [SmartArg] is executed
   Future<void> postCommandExecute() => Future.value();
 
-  Future<void> execute() => Future.value();
+  Future<void> execute() async {
+    if (isNotNull(_defaultCommand)) {
+      await _construct(_defaultCommand!).parse(_arguments);
+    } else {
+      return Future.value();
+    }
+  }
 }

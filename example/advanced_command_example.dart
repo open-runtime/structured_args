@@ -61,7 +61,7 @@ class Args extends SmartArg {
   @Command()
   late DockerRunCommand run;
 
-  @Command()
+  @DefaultCommand()
   late DockerListCommand list;
 }
 
