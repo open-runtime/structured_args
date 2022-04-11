@@ -29,7 +29,10 @@ void main() {
 
     test('special keys with negate', () {
       var args = const BooleanArgument(
-          short: 'v', long: 'verbose', isNegateable: true);
+        short: 'v',
+        long: 'verbose',
+        isNegateable: true,
+      );
       expect(args.specialKeys('v', 'verbose'), ['no-verbose']);
     });
   });
