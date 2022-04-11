@@ -3,6 +3,7 @@
 import 'dart:io';
 
 import 'package:collection/collection.dart' show IterableExtension;
+import 'package:meta/meta.dart';
 import 'package:reflectable/reflectable.dart';
 
 import 'argument.dart';
@@ -51,6 +52,9 @@ String? _argumentHelp(MirrorParameterPair mpp) {
 @SmartArg.reflectable
 class SmartArg {
   static const reflectable = Reflector.reflector;
+
+  @visibleForTesting
+  static void Function(Object?) output = print;
 
   //
   // Public API
@@ -194,8 +198,10 @@ class SmartArg {
         _validate();
         await _runAfterParse();
         if (help) {
-          print(usage());
-          exit(0);
+          output(usage());
+          if (isTrue(_app?.exitOnHelp)) {
+            exit(0);
+          }
         } else {
           await _runPreCommandExecute();
           await execute();
@@ -204,10 +210,10 @@ class SmartArg {
       }
     } on ArgumentError catch (e) {
       if (isTrue(_app?.exitOnFailure)) {
-        print(e.toString());
+        output(e.toString());
         if (isTrue(_app?.printUsageOnExitFailure)) {
-          print('');
-          print(usage());
+          output('');
+          output(usage());
         }
         exit(1);
       }

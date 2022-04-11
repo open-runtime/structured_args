@@ -30,6 +30,9 @@ class Parser {
   /// parsing errors.
   final bool exitOnFailure;
 
+  /// Exit the application with an exit code of 0 if help was requested
+  final bool exitOnHelp;
+
   /// Print usage of the application if an [exitOnFailure] is triggered
   final bool printUsageOnExitFailure;
 
@@ -57,6 +60,7 @@ class Parser {
     this.minimumExtras,
     this.maximumExtras,
     this.exitOnFailure = true,
+    this.exitOnHelp = true,
     this.printUsageOnExitFailure = false,
     this.strict = false,
     this.argumentTerminator = '--',
