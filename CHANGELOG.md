@@ -1,9 +1,10 @@
-## 4.0.0 - Unreleased
+## 4.0.0-dev.1 
 
 - Added:
-    - `DefaultCommand` to allow invoking execution of an annotated `Command` by default if no args invoke another command
-    - `Parser.exitOnHelp` (defaults to `true`) to `exit(0)` after help is requested.
-    - `Parser.printUsageOnExitFailure` (defaults to `false`) to print the usage if `SmartArg` threw an error during parsing
+  - `DefaultCommand` to allow invoking execution of an annotated `Command` by default if no args invoke another command
+  - `Parser.exitOnHelp` (defaults to `true`) to `exit(0)` after help is requested.
+  - `Parser.printUsageOnExitFailure` (defaults to `false`) to print the usage if `SmartArg` threw an error during parsing
+  - `meta` dependency
 - Changed:
   - During parse, commands are not instantiated by default. Instead `smart_arg` will attempt to use the pre-defined
     class variable. If that fails, then a new instance of the `Command` type will be constructed and executed.
