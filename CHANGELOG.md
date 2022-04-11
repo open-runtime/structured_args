@@ -1,7 +1,19 @@
 ## 4.0.0 - Unreleased
 
-- Removed:
+- Added:
+    - `DefaultCommand` to allow invoking execution of an annotated `Command` by default if no args invoke another command
+    - `Parser.exitOnHelp` (defaults to `true`) to `exit(0)` after help is requested.
+    - `Parser.printUsageOnExitFailure` (defaults to `false`) to print the usage if `SmartArg` threw an error during parsing
+- Changed:
+  - During parse, commands are not instantiated by default. Instead `smart_arg` will attempt to use the pre-defined
+    class variable. If that fails, then a new instance of the `Command` type will be constructed and executed.
+- Breaking:
+  - `ParsedResult` is now private and no-longer exported
   - non-async command hooks in favour of the async counterparts
+  - `SmartArgCommand`. Extend `SmartArg` and override `Future<void> execute()` instead.
+  - All extensions of `SmartArg` have a `HelpArgument` by default.
+- Style:
+  - Upgraded analysis rules and fixed warnings
 
 ## 3.1.0
 
