@@ -4,6 +4,6 @@ targets:
       reflectable:
         generate_for:
           - example/**.dart
-          - test/smart_arg_test.dart
+          - test/reflected_tests/**.dart
         options:
           formatted: true

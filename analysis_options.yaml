@@ -18,7 +18,8 @@ linter:
 
 analyzer:
   exclude:
-    - test/*.reflectable.dart
+    - lib/**.reflectable.dart
+    - test/**.reflectable.dart
     - example/*.reflectable.dart
   language:
     strict-casts: true
