@@ -218,15 +218,19 @@ class SmartArg {
         }
       }
     } on ArgumentError catch (e) {
-      if (isTrue(_app?.exitOnFailure)) {
-        output(e.toString());
-        if (isTrue(_app?.printUsageOnExitFailure)) {
-          output('');
-          output(usage());
-        }
-        exit(1);
-      }
+      _onError(e.toString());
       rethrow;
+    }
+  }
+
+  void _onError(String message) {
+    if (isTrue(_app?.exitOnFailure)) {
+      output(message);
+      if (isTrue(_app?.printUsageOnExitFailure)) {
+        output('');
+        output(usage());
+      }
+      exit(1);
     }
   }
 
@@ -638,7 +642,9 @@ class SmartArg {
     if (isNotNull(_defaultCommand)) {
       await _construct(_defaultCommand!).parse(_arguments);
     } else {
-      return Future.value();
+      _onError(
+        'Implementation not defined: ${_arguments.isEmpty ? '<no arguments provided>' : _arguments.join(' ')}',
+      );
     }
   }
 }
