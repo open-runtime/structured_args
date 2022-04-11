@@ -1,8 +1,9 @@
 Smart Arg
 =========
 
-[![CircleCI](https://circleci.com/gh/axrs/smart_arg/tree/master-forked.svg?style=svg)](https://circleci.com/gh/axrs/smart_arg/?branch=master-forked)
+[![CircleCI](https://circleci.com/gh/axrs/smart_arg/tree/master.svg?style=svg)](https://circleci.com/gh/axrs/smart_arg/?branch=master)
 [![Pub](https://img.shields.io/pub/v/smart_arg_fork.svg)](https://pub.dartlang.org/packages/smart_arg_fork)
+![Pub Version (including pre-releases)](https://img.shields.io/pub/v/smart_arg_fork?include_prereleases)
 
 A source generated, simple to use command line argument parser. The main rationale behind this argument parser is the
 use of a class to store the argument values. Therefore, you gain static type checking and code completion.
