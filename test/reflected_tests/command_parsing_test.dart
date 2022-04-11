@@ -3,7 +3,7 @@
 import 'package:smart_arg_fork/smart_arg_fork.dart';
 import 'package:test/test.dart';
 
-import '../smart_arg_test.reflectable.dart';
+import 'command_parsing_test.reflectable.dart';
 
 String? whatExecuted;
 

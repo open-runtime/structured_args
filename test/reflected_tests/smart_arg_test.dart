@@ -4,7 +4,7 @@ import 'package:path/path.dart' as path;
 import 'package:smart_arg_fork/smart_arg_fork.dart';
 import 'package:test/test.dart';
 
-import '../smart_arg_test.reflectable.dart';
+import 'smart_arg_test.reflectable.dart';
 
 @SmartArg.reflectable
 @Parser(
