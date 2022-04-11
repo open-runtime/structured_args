@@ -332,9 +332,9 @@ class SmartArg {
           .forEach((mpp) {
         String? help = _argumentHelp(mpp);
         var commandDisplay = '$linePrefix${mpp.displayKey!}';
-        var suffix = (mpp.argument is DefaultCommand) ? ' [DEFAULT]' : '';
+        var suffix = (mpp.argument is DefaultCommand) ? '\n[DEFAULT]' : '';
         var commandHelp = hardWrap(
-          (help ?? '') + suffix,
+          '${help ?? ''}$suffix',
           helpLineWidth,
         );
         commandHelp = indent(commandHelp, optionColumnWidth);
@@ -453,13 +453,12 @@ class SmartArg {
         argumentName = argumentName.substring(2);
       }
 
-      if (isNotNull(_defaultCommand)) {
-        continue;
-      }
-
       // Find our argument configuration
       var argumentConfiguration = _values[argumentName];
       if (isNull(argumentConfiguration)) {
+        if (isNotNull(_defaultCommand)) {
+          continue;
+        }
         throw ArgumentError('$originalArgument is invalid');
       } else {
         if (argumentConfiguration!.argument.needsValue && !hasValueViaEqual) {
