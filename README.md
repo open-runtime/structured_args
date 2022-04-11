@@ -4,28 +4,57 @@ Smart Arg
 [![CircleCI](https://circleci.com/gh/axrs/smart_arg/tree/master-forked.svg?style=svg)](https://circleci.com/gh/axrs/smart_arg/?branch=master-forked)
 [![Pub](https://img.shields.io/pub/v/smart_arg_fork.svg)](https://pub.dartlang.org/packages/smart_arg_fork)
 
-A source generated, simple to use command line argument parser. The main
-rationale behind this argument parser is the use of a class to store the
-argument values. Therefore, you gain static type checking and code
-completion.
+A source generated, simple to use command line argument parser. The main rationale behind this argument parser is the
+use of a class to store the argument values. Therefore, you gain static type checking and code completion.
 
-Types currently supported are: `bool`, `int`, `double`, `String`, `File`, and
-`Directory`. Defaults can be supplied as any other Dart class and one can
-determine if a parameter was set based on it's value being null or not. Types
-can also be defined as a `List<T>` to support multiple arguments of the same
-name to be specified on the command line. Anything passed on the command line
-that is not an option will be considered an extra, of which you can demand a
-minimum and/or maximum requirement.
+Types currently supported are: `bool`, `int`, `double`, `String`, `File`, `Directory`, `Enum` and `Command`. Defaults
+can be supplied as any other Dart class and one can determine if a parameter was set based on it's value being null or
+not. Types can also be defined as a `List<T>` to support multiple arguments of the same name to be specified on the
+command line. Anything passed on the command line that is not an option will be considered an extra, of which you can
+demand a minimum and/or maximum requirement.
 
-Through the use of annotations, each parameter (and main class) can have
-various attributes set such as help text, if the parameter is required, if
-the file must exist on disk, can the parameter be negated, a short alias, and
-more.
+Through the use of annotations, each parameter (and main class) can have various attributes set such as help text, if
+the parameter is required, if the file must exist on disk, can the parameter be negated, a short alias, and more.
 
-Beautiful help is of course generated automatically when the user gives an
-incorrect parameter or misses a required parameter or extra.
+Beautiful help is of course generated automatically when the user gives an incorrect parameter or misses a required
+parameter or extra.
 
-## Simple Example
+## Argument Types
+
+* [Boolean](https://pub.dev/documentation/smart_arg_fork/latest/smart_arg_fork/BooleanArgument-class.html)
+* [Command](https://pub.dev/documentation/smart_arg_fork/latest/smart_arg_fork/Command-class.html)
+  * and [DefaultCommand](https://pub.dev/documentation/smart_arg_fork/latest/smart_arg_fork/DefaultCommand-class.html)
+* [Directory](https://pub.dev/documentation/smart_arg_fork/latest/smart_arg_fork/DirectoryArgument-class.html)
+* [Double](https://pub.dev/documentation/smart_arg_fork/latest/smart_arg_fork/DoubleArgument-class.html)
+* [Enum](https://pub.dev/documentation/smart_arg_fork/latest/smart_arg_fork/EnumArgument-class.html)
+* [File](https://pub.dev/documentation/smart_arg_fork/latest/smart_arg_fork/FileArgument-class.html)
+* [Help](https://pub.dev/documentation/smart_arg_fork/latest/smart_arg_fork/HelpArgument-class.html)
+* [Integer](https://pub.dev/documentation/smart_arg_fork/latest/smart_arg_fork/IntegerArgument-class.html)
+* [String](https://pub.dev/documentation/smart_arg_fork/latest/smart_arg_fork/StringArgument-class.html)
+
+## Build Process
+
+`smart_arg` relies on the [reflectable] package. Therefore, you must add to
+your build process. Your `build.yaml` file should look similar to:
+
+```
+targets:
+  $default:
+    builders:
+      reflectable:
+        generate_for:
+          - bin/main.dart
+```
+
+Also, before you can execute your program and any time you change your SmartArg class, you must execute the builder:
+
+```
+$ pub run build_runner build
+```
+
+## Examples
+
+### Simple CLI
 
 ```dart
 import 'package:smart_arg_fork/smart_arg_fork.dart';
@@ -69,10 +98,10 @@ Future<void> main(List<String> arguments) async {
 }
 ```
 
-Please see the API documentation for a better understanding of what
-`Argument` types exist as well as their individual options.
+Please see the API documentation for a better understanding of what `Argument` types exist as well as their individual
+options.
 
-## Help Output
+#### Help Output
 
 The help output of the above example is:
 
@@ -90,31 +119,10 @@ Hello World application
   -h, --help, -?         Show help
 ```
 
-## Build Process
 
-`smart_arg` relies on the [reflectable] package. Therefore, you must add to
-your build process. Your `build.yaml` file should look similar to:
+### Detailed Help Example
 
-```
-targets:
-  $default:
-    builders:
-      reflectable:
-        generate_for:
-          - bin/main.dart
-```
-
-Also, before you can execute your program and any time you change your SmartArg
-class, you must execute the builder:
-
-```
-$ pub run build_runner build
-```
-
-## Complete Example
-
-A more complex example [smart_arg_example.dart][smart_arg_example.dart]
-produces the following output:
+A more complex example [smart_arg_example.dart][smart_arg_example.dart] produces the following output:
 
 ```
 Example smart arg application
@@ -165,10 +173,10 @@ SECTION 2
   This is more extended text that can be put into its own section.
 ```
 
-## Command Execution
+### Sub-Command Example
 
-More complex command line applications often times have commands. These commands
-then also have options of their own. `SmartArg` accomplishes this very easily:
+More complex command line applications often times have commands. These commands then also have options of their own.
+`SmartArg` accomplishes this very easily:
 
 ```dart
 import 'package:smart_arg_fork/smart_arg_fork.dart';
@@ -233,9 +241,9 @@ class Args extends SmartArg {
   @Command(help: 'Put a file on the remote server')
   late PutCommand put;
 
-// As there is no @DefaultCommand, and we have NOT overridden the
-// `Future<void> execute()` method, an `Implementation not defined` error will
-// be printed, followed by the usage and the process will exit with code 0
+  // As there is no @DefaultCommand, and we have NOT overridden the
+  // `Future<void> execute()` method, an `Implementation not defined` error will
+  // be printed, followed by the usage and the process will exit with code 0
 }
 
 Future<void> main(List<String> arguments) async {
@@ -245,7 +253,7 @@ Future<void> main(List<String> arguments) async {
 }
 ```
 
-### With Inheritance and Mixins
+### Inheritance and Mixin Example
 
 It is also possible to leverage inheritance and Dart `mixin` declarations to help reduce boilerplate and share argument
 definitions between multiple commands. Just remember to annotate each `mixin` with `@SmartArg.reflectable` so that
@@ -318,6 +326,8 @@ class Args extends SmartArg {
   @Command()
   late DockerRunCommand run;
 
+  // The @DefaultCommand will be the main Command to run here (if `pull`, `run`, or `lint` are unspecified) as we have
+  // not overridden `Future<void> execute()`
   @DefaultCommand()
   late DockerListCommand list;
 }
@@ -329,7 +339,7 @@ Future<void> main(List<String> arguments) async {
 }
 ```
 
-Which produces:
+#### Output and Run Log
 
 ```text
 $ dart run .\example\advanced_command_example.dart --help
