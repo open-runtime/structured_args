@@ -5,19 +5,19 @@ void main() {
   group('StringArgument', () {
     group('handleValue', () {
       test('simple value', () {
-        var arg = StringArgument();
+        var arg = const StringArgument();
 
         expect(arg.handleValue('key', 'hello'), 'hello');
       });
 
       test('must be one of (valid)', () {
-        var arg = StringArgument(mustBeOneOf: ['hello', 'howdy']);
+        var arg = const StringArgument(mustBeOneOf: ['hello', 'howdy']);
         expect(arg.handleValue('key', 'hello'), 'hello');
       });
 
       test('must be one of (invalid)', () {
         try {
-          var arg = StringArgument(mustBeOneOf: ['hello', 'howdy']);
+          var arg = const StringArgument(mustBeOneOf: ['hello', 'howdy']);
           arg.handleValue('key', 'cya');
           fail('invalid must of should have thrown an error');
         } on ArgumentError {

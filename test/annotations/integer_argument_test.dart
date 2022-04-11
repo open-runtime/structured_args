@@ -5,20 +5,20 @@ void main() {
   group('IntegerArgument', () {
     group('handleValue', () {
       test('simple value', () {
-        var arg = IntegerArgument();
+        var arg = const IntegerArgument();
 
         expect(arg.handleValue('key', '300'), 300);
       });
 
       group('minimum/maximum', () {
         test('in range', () {
-          var arg = IntegerArgument(minimum: 100, maximum: 500);
+          var arg = const IntegerArgument(minimum: 100, maximum: 500);
           expect(arg.handleValue('key', '300'), 300);
         });
 
         test('too low', () {
           try {
-            var arg = IntegerArgument(minimum: 100, maximum: 500);
+            var arg = const IntegerArgument(minimum: 100, maximum: 500);
             var _ = arg.handleValue('key', '95');
 
             fail('value lower than minimum should have thrown an exception');
@@ -29,7 +29,7 @@ void main() {
 
         test('too high', () {
           try {
-            var arg = IntegerArgument(minimum: 100, maximum: 500);
+            var arg = const IntegerArgument(minimum: 100, maximum: 500);
             var _ = arg.handleValue('key', '505');
 
             fail('value higher than maximum should have thrown an exception');

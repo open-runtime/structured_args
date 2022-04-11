@@ -5,7 +5,7 @@ void main() {
   group('argument', () {
     group('command', () {
       test('handleValue', () {
-        var c = Command(help: 'Blah Command');
+        var c = const Command(help: 'Blah Command');
 
         // Make sure no exceptions
         c.handleValue('key', null);

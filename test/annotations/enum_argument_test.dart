@@ -7,13 +7,13 @@ void main() {
   group('EnumArgument', () {
     group('handleValue', () {
       test('simple value', () {
-        var arg = EnumArgument<Echo>(values: Echo.values);
+        var arg = const EnumArgument<Echo>(values: Echo.values);
 
         expect(arg.handleValue('key', 'hello'), Echo.hello);
       });
 
       test('cased value', () {
-        var arg = EnumArgument<Echo>(values: Echo.values);
+        var arg = const EnumArgument<Echo>(values: Echo.values);
 
         expect(arg.handleValue('key', 'hello-world'), Echo.helloWorld);
         expect(arg.handleValue('key', 'helloWorld'), Echo.helloWorld);
@@ -22,7 +22,7 @@ void main() {
 
       test('must be one of (invalid)', () {
         try {
-          var arg = EnumArgument<Echo>(values: Echo.values);
+          var arg = const EnumArgument<Echo>(values: Echo.values);
           arg.handleValue('key', 'earth');
           fail('invalid must of should have thrown an error');
         } on ArgumentError {
@@ -31,7 +31,7 @@ void main() {
       });
 
       test('additional help lines', () {
-        var arg = EnumArgument<Echo>(values: Echo.values);
+        var arg = const EnumArgument<Echo>(values: Echo.values);
         var help = arg.additionalHelpLines;
 
         expect(help, ['must be one of hello, world, hello-world']);

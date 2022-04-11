@@ -441,7 +441,7 @@ class SmartArg {
 
       if (argument.toLowerCase() == _app!.argumentTerminator?.toLowerCase()) {
         _extras!.addAll(expandedArguments.skip(argumentIndex));
-        return _ParsedResult.success();
+        return const _ParsedResult.success();
       } else if (isFalse(argument.startsWith('-'))) {
         if (_commands.containsKey(argument)) {
           var command = _commands[argument]!;
@@ -456,7 +456,7 @@ class SmartArg {
 
           if (isFalse(_app!.allowTrailingArguments)) {
             _extras!.addAll(expandedArguments.skip(argumentIndex));
-            return _ParsedResult.success();
+            return const _ParsedResult.success();
           }
 
           continue;
@@ -494,7 +494,7 @@ class SmartArg {
         _trySetValue(instanceMirror, argumentName, value);
       }
     }
-    return _ParsedResult.success();
+    return const _ParsedResult.success();
   }
 
   //Attempts to set the value of the argument

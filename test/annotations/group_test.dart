@@ -5,7 +5,7 @@ void main() {
   group('annotations', () {
     group('group', () {
       test('constructs', () {
-        var group = Group(
+        var group = const Group(
           name: 'Name',
           beforeHelp: 'before',
           afterHelp: 'after',

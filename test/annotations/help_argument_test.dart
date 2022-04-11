@@ -4,7 +4,7 @@ import 'package:test/test.dart';
 void main() {
   group('HelpArgument', () {
     test('specialKeys', () {
-      var arg = HelpArgument();
+      var arg = const HelpArgument();
       expect(arg.specialKeys('h', 'help'), ['-?']);
     });
   });

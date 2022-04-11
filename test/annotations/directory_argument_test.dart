@@ -7,7 +7,7 @@ import 'package:test/test.dart';
 void main() {
   group('DirectoryArgument', () {
     test('emptyList', () {
-      var arg = DirectoryArgument();
+      var arg = const DirectoryArgument();
       // ignore: unnecessary_type_check
       expect(arg.emptyList is List, true);
 
@@ -17,7 +17,7 @@ void main() {
 
     group('handleValue', () {
       test('returns directory', () {
-        var arg = DirectoryArgument();
+        var arg = const DirectoryArgument();
         var value = arg.handleValue('dir', path.join('.', 'lib'));
 
         expect(value.path, contains('${path.separator}lib'));
@@ -25,14 +25,14 @@ void main() {
 
       group('must exist', () {
         test('exists', () {
-          var arg = DirectoryArgument(mustExist: true);
+          var arg = const DirectoryArgument(mustExist: true);
           var value = arg.handleValue('dir', path.join('.', 'lib'));
 
           expect(value.path, contains('${path.separator}lib'));
         });
 
         test('does not exists', () {
-          var arg = DirectoryArgument(mustExist: true);
+          var arg = const DirectoryArgument(mustExist: true);
 
           try {
             var _ =

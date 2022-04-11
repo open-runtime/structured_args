@@ -4,7 +4,7 @@ import 'package:test/test.dart';
 void main() {
   group('Parser', () {
     test('Parser', () {
-      var app = Parser();
+      var app = const Parser();
       expect(app, isNotNull);
     });
   });

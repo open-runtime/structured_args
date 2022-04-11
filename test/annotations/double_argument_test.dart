@@ -5,20 +5,20 @@ void main() {
   group('DoubleArgument', () {
     group('handleValue', () {
       test('simple value', () {
-        var arg = DoubleArgument();
+        var arg = const DoubleArgument();
 
         expect(arg.handleValue('key', '300'), 300);
       });
 
       group('minimum/maximum', () {
         test('in range', () {
-          var arg = DoubleArgument(minimum: 99.9, maximum: 499.9);
+          var arg = const DoubleArgument(minimum: 99.9, maximum: 499.9);
           expect(arg.handleValue('key', '300.0'), 300.0);
         });
 
         test('too low', () {
           try {
-            var arg = DoubleArgument(minimum: 99.9, maximum: 499.9);
+            var arg = const DoubleArgument(minimum: 99.9, maximum: 499.9);
             var _ = arg.handleValue('key', '99.8');
 
             fail('value lower than minimum should have thrown an exception');
@@ -29,7 +29,7 @@ void main() {
 
         test('too high', () {
           try {
-            var arg = DoubleArgument(minimum: 99.9, maximum: 499.9);
+            var arg = const DoubleArgument(minimum: 99.9, maximum: 499.9);
             var _ = arg.handleValue('key', '499.91');
 
             fail('value higher than maximum should have thrown an exception');

@@ -4,7 +4,7 @@ import 'package:test/test.dart';
 void main() {
   group('reflector', () {
     test('constructs', () {
-      var _ = Reflector();
+      var _ = Reflector.reflector;
       expect(1, 1);
     });
   });
