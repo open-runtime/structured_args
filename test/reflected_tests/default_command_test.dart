@@ -60,6 +60,13 @@ class RootCommand extends SmartArg {
 
   @Command()
   late BenchmarkTestCommand benchmark;
+
+  @Command()
+  late BenchmarkTestCommand lateDefinedBenchmark = BenchmarkTestCommand()
+    ..times = 5;
+
+  @Command()
+  BenchmarkTestCommand definedBenchmark = BenchmarkTestCommand()..times = 10;
 }
 
 void main() {
@@ -150,6 +157,34 @@ void main() {
 
           expect(output.first, startsWith('Running Benchmark Tests 8 times'));
         });
+      });
+    });
+
+    group('commands can be predefined', () {
+      test('with pre-defined args', () async {
+        await cmd.parse(['defined-benchmark']);
+
+        expect(output.first, startsWith('Running Benchmark Tests 10 times'));
+      });
+
+      test('override args', () async {
+        await cmd.parse(['defined-benchmark', '--times', '200']);
+
+        expect(output.first, startsWith('Running Benchmark Tests 200 times'));
+      });
+    });
+
+    group('commands can be predefined as late', () {
+      test('with pre-defined args', () async {
+        await cmd.parse(['late-defined-benchmark']);
+
+        expect(output.first, startsWith('Running Benchmark Tests 5 times'));
+      });
+
+      test('override args', () async {
+        await cmd.parse(['late-defined-benchmark', '--times', '100']);
+
+        expect(output.first, startsWith('Running Benchmark Tests 100 times'));
       });
     });
   });

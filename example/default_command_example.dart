@@ -57,6 +57,13 @@ class RootCommand extends SmartArg {
 
   @Command()
   late BenchmarkTestCommand benchmark;
+
+  @Command()
+  late BenchmarkTestCommand lateDefinedBenchmark = BenchmarkTestCommand()
+    ..times = 5;
+
+  @Command()
+  BenchmarkTestCommand definedBenchmark = BenchmarkTestCommand()..times = 10;
 }
 
 Future<void> main(List<String> arguments) async {

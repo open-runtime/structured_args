@@ -172,12 +172,21 @@ class SmartArg {
 
   SmartArg _construct(MirrorParameterPair mpp) {
     var a = mpp.mirror;
-    var b = a.type as ClassMirror;
-
-    /// Construct the new command
-    var command = b.newInstance('', []) as SmartArg;
-    command.parent = this;
-    return command;
+    SmartArg? cmd;
+    try {
+      var instanceMirror = reflectable.reflect(this);
+      cmd = instanceMirror.invokeGetter(a.simpleName) as SmartArg;
+    } catch (error) {
+      //noop. Failed using pre-defined value, so will revert to constructing
+    } finally {
+      if (cmd == null) {
+        // Construct the new command
+        var b = a.type as ClassMirror;
+        cmd = b.newInstance('', []) as SmartArg;
+      }
+    }
+    cmd.parent = this;
+    return cmd;
   }
 
   /// Parse the [arguments] list populating properties on the [SmartArg] class.
