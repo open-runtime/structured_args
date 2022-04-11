@@ -28,8 +28,6 @@ incorrect parameter or misses a required parameter or extra.
 ## Simple Example
 
 ```dart
-import 'dart:io';
-
 import 'package:smart_arg_fork/smart_arg_fork.dart';
 
 import 'readme_example.reflectable.dart';
@@ -40,7 +38,7 @@ class Args extends SmartArg {
   @StringArgument(
     help: 'Name of person to say hello to',
     //Environment Variable will be used if defined and not otherwise specified
-    environmentVariable: "GREETING_NAME",
+    environmentVariable: 'GREETING_NAME',
   )
   String name = 'World'; // Default to World
 
@@ -59,21 +57,12 @@ class Args extends SmartArg {
     environmentVariable: 'GREETING_COUNT',
   )
   late int count;
-
-  @HelpArgument()
-  bool help = false;
 }
 
-void main(List<String> arguments) async {
+Future<void> main(List<String> arguments) async {
   initializeReflectable();
-
   var args = Args();
   await args.parse(arguments);
-  if (args.help) {
-    print(args.usage());
-    exit(0);
-  }
-
   for (var i = 0; i < args.count; i++) {
     print('${args.greeting}, ${args.name}!');
   }
@@ -182,36 +171,19 @@ More complex command line applications often times have commands. These commands
 then also have options of their own. `SmartArg` accomplishes this very easily:
 
 ```dart
-import 'dart:io';
-
 import 'package:smart_arg_fork/smart_arg_fork.dart';
 
 import 'command_example.reflectable.dart';
 
 @SmartArg.reflectable
 @Parser(description: 'get file from remote server')
-class GetCommand extends SmartArgCommand {
+class GetCommand extends SmartArg {
   @BooleanArgument(help: 'Should the file be removed after downloaded?')
-  bool? removeAfterGet;
-
-  @HelpArgument()
-  bool? help;
+  late bool removeAfterGet = false;
 
   @override
-  Future<void> execute(SmartArg parentArguments) async {
-    if (help == true) {
-      print(usage());
-      exit(0);
-    }
-
-    if ((parentArguments as Args).verbose == true) {
-      print('Verbose is on');
-    } else {
-      print('Verbose is off');
-    }
-
+  Future<void> execute() async {
     print('Getting file...');
-
     if (removeAfterGet == true) {
       print('Removing file on remote server (not really)');
     }
@@ -220,21 +192,13 @@ class GetCommand extends SmartArgCommand {
 
 @SmartArg.reflectable
 @Parser(description: 'put file onto remote server')
-class PutCommand extends SmartArgCommand {
+class PutCommand extends SmartArg {
   @BooleanArgument(help: 'Should the file be removed locally after downloaded?')
-  bool? removeAfterPut;
-
-  @HelpArgument()
-  bool? help;
+  late bool removeAfterPut = false;
 
   @override
-  Future<void> execute(SmartArg parentArguments) async {
-    if (help == true) {
-      print(usage());
-      exit(0);
-    }
-
-    if ((parentArguments as Args).verbose == true) {
+  Future<void> execute() async {
+    if ((parent as Args).verbose) {
       print('Verbose is on');
     } else {
       print('Verbose is off');
@@ -252,34 +216,32 @@ class PutCommand extends SmartArgCommand {
 @Parser(
   description: 'Example using commands',
   extendedHelp: [
-    ExtendedHelp('This is some text below the command listing',
-        header: 'EXTENDED HELP')
+    ExtendedHelp(
+      'This is some text below the command listing',
+      header: 'EXTENDED HELP',
+    )
   ],
+  printUsageOnExitFailure: true,
 )
 class Args extends SmartArg {
   @BooleanArgument(short: 'v', help: 'Verbose mode')
-  bool? verbose;
+  late bool verbose = false;
 
   @Command(help: 'Get a file from the remote server')
-  GetCommand? get;
+  late GetCommand get;
 
   @Command(help: 'Put a file on the remote server')
-  PutCommand? put;
+  late PutCommand put;
 
-  @HelpArgument()
-  bool? help;
+// As there is no @DefaultCommand, and we have NOT overridden the
+// `Future<void> execute()` method, an `Implementation not defined` error will
+// be printed, followed by the usage and the process will exit with code 0
 }
 
-void main(List<String> arguments) async {
+Future<void> main(List<String> arguments) async {
   initializeReflectable();
-
   var args = Args();
   await args.parse(arguments);
-
-  if (args.help == true) {
-    print(args.usage());
-    exit(0);
-  }
 }
 ```
 
@@ -293,54 +255,52 @@ definitions between multiple commands. Just remember to annotate each `mixin` wi
 > argument assigning process.
 
 ```dart
-import 'dart:io';
-
 import 'package:smart_arg_fork/smart_arg_fork.dart';
 
 import 'advanced_command_example.reflectable.dart';
-
-/// A basic mixin for adding a the help argument to each [SmartArg] extension
-@SmartArg.reflectable
-mixin HelpArg {
-  @HelpArgument()
-  bool? help;
-
-  void printUsageAndExitIfHelpRequested() {
-    if (help == true) {
-      final SmartArg arg = this as SmartArg;
-      print(arg.usage());
-      exit(0);
-    }
-  }
-}
 
 /// A basic mixin for adding a Docker Image argument to each [SmartArg] extension
 @SmartArg.reflectable
 mixin DockerImageArg {
   @StringArgument(help: 'Docker Image')
-  String? image = 'dart:stable';
+  late String image = 'dart:stable';
 }
 
 @SmartArg.reflectable
 @Parser(description: 'Pulls a Docker Image')
-class DockerPullCommand extends SmartArgCommand with HelpArg, DockerImageArg {
+class DockerPullCommand extends SmartArg with DockerImageArg {
   @override
-  Future<void> execute(SmartArg parentArguments) async {
-    printUsageAndExitIfHelpRequested();
-    print('docker pull $image');
+  Future<void> execute() async {
+    print('\$ docker pull $image');
   }
 }
 
 @SmartArg.reflectable
 @Parser(description: 'Runs a Docker Image')
-class DockerRunCommand extends SmartArgCommand with HelpArg, DockerImageArg {
+class DockerRunCommand extends SmartArg with DockerImageArg {
   @BooleanArgument(help: 'Pull image before running')
   bool pull = false;
 
   @override
-  Future<void> execute(SmartArg parentArguments) async {
-    printUsageAndExitIfHelpRequested();
-    print('docker run${pull ? '--pull' : ''} $image');
+  Future<void> execute() async {
+    print('\$ docker run${pull ? ' --pull' : ''} $image');
+  }
+}
+
+enum Status { running, stopped, all }
+
+@SmartArg.reflectable
+@Parser(description: 'Lists Docker Images')
+class DockerListCommand extends SmartArg with DockerImageArg {
+  @EnumArgument<Status>(
+    help: 'Docker Image Status',
+    values: Status.values,
+  )
+  late Status status = Status.all;
+
+  @override
+  Future<void> execute() async {
+    print('\$ docker ps --status $status');
   }
 }
 
@@ -348,22 +308,24 @@ class DockerRunCommand extends SmartArgCommand with HelpArg, DockerImageArg {
 @Parser(
   description: 'Example of using mixins to reduce argument declarations',
 )
-class Args extends SmartArg with HelpArg {
+class Args extends SmartArg {
   @BooleanArgument(short: 'v', help: 'Verbose mode')
-  bool? verbose;
+  late bool verbose = false;
 
-  @Command(help: 'Pulls a Docker Image')
-  DockerPullCommand? pull;
+  @Command()
+  late DockerPullCommand pull;
 
-  @Command(help: 'Runs a Docker Image')
-  DockerRunCommand? run;
+  @Command()
+  late DockerRunCommand run;
+
+  @DefaultCommand()
+  late DockerListCommand list;
 }
 
-void main(List<String> arguments) async {
+Future<void> main(List<String> arguments) async {
   initializeReflectable();
   var args = Args();
   await args.parse(arguments);
-  args.printUsageAndExitIfHelpRequested();
 }
 ```
 
@@ -378,6 +340,8 @@ Example of using mixins to reduce argument declarations
   -h, --help, -?         Show help
 
 COMMANDS
+  list                   Lists Docker Images
+                         [DEFAULT]
   pull                   Pulls a Docker Image
   run                    Runs a Docker Image
 
@@ -403,6 +367,6 @@ docker run --pull dart:sdk-stable
 Please send pull requests, feature requests and bug reports to the
 [issue tracker][tracker].
 
-[tracker]: https://github.com/jcowgar/smart_arg
-[smart_arg_example.dart]: https://github.com/jcowgar/smart_arg/blob/master/example/smart_arg_example.dart
+[tracker]: https://github.com/axrs/smart_arg_fork
+[smart_arg_example.dart]: https://github.com/axrs/smart_arg_fork/blob/master-forked/example/smart_arg_example.dart
 [reflectable]: https://pub.dev/packages/reflectable

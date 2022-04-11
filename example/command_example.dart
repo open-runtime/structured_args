@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:smart_arg_fork/smart_arg_fork.dart';
 
 import 'command_example.reflectable.dart';
@@ -12,11 +10,6 @@ class GetCommand extends SmartArg {
 
   @override
   Future<void> execute() async {
-    // if ((parentArguments as Args).verbose == true) {
-    //   print('Verbose is on');
-    // } else {
-    //   print('Verbose is off');
-    // }
     print('Getting file...');
     if (removeAfterGet == true) {
       print('Removing file on remote server (not really)');
@@ -55,6 +48,7 @@ class PutCommand extends SmartArg {
       header: 'EXTENDED HELP',
     )
   ],
+  printUsageOnExitFailure: true,
 )
 class Args extends SmartArg {
   @BooleanArgument(short: 'v', help: 'Verbose mode')
@@ -65,16 +59,14 @@ class Args extends SmartArg {
 
   @Command(help: 'Put a file on the remote server')
   late PutCommand put;
+
+// As there is no @DefaultCommand, and we have NOT overridden the
+// `Future<void> execute()` method, an `Implementation not defined` error will
+// be printed, followed by the usage and the process will exit with code 0
 }
 
 Future<void> main(List<String> arguments) async {
   initializeReflectable();
-
   var args = Args();
   await args.parse(arguments);
-
-  if (args.help == true) {
-    print(args.usage());
-    exit(0);
-  }
 }
