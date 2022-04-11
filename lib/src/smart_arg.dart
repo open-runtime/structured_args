@@ -16,13 +16,13 @@ import 'predicates.dart';
 import 'reflector.dart';
 import 'string_utils.dart';
 
-class ParsedResult {
+class _ParsedResult {
   final MirrorParameterPair? command;
   final List<String>? commandArguments;
 
-  const ParsedResult({this.command, this.commandArguments});
+  const _ParsedResult({this.command, this.commandArguments});
 
-  const ParsedResult.success()
+  const _ParsedResult.success()
       : command = null,
         commandArguments = null;
 }
@@ -428,7 +428,7 @@ class SmartArg {
     return result;
   }
 
-  ParsedResult _parse(List<String> arguments) {
+  _ParsedResult _parse(List<String> arguments) {
     var instanceMirror = reflectable.reflect(this);
     var expandedArguments = _rewriteArguments(arguments);
 
@@ -441,12 +441,12 @@ class SmartArg {
 
       if (argument.toLowerCase() == _app!.argumentTerminator?.toLowerCase()) {
         _extras!.addAll(expandedArguments.skip(argumentIndex));
-        return ParsedResult.success();
+        return _ParsedResult.success();
       } else if (isFalse(argument.startsWith('-'))) {
         if (_commands.containsKey(argument)) {
           var command = _commands[argument]!;
           var commandArguments = arguments.skip(argumentIndex).toList();
-          return ParsedResult(
+          return _ParsedResult(
             command: command,
             commandArguments: commandArguments,
           );
@@ -456,7 +456,7 @@ class SmartArg {
 
           if (isFalse(_app!.allowTrailingArguments)) {
             _extras!.addAll(expandedArguments.skip(argumentIndex));
-            return ParsedResult.success();
+            return _ParsedResult.success();
           }
 
           continue;
@@ -494,7 +494,7 @@ class SmartArg {
         _trySetValue(instanceMirror, argumentName, value);
       }
     }
-    return ParsedResult.success();
+    return _ParsedResult.success();
   }
 
   //Attempts to set the value of the argument
