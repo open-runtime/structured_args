@@ -1,4 +1,4 @@
-import 'package:smart_arg_fork/smart_arg_fork.dart';
+import 'package:runtime_structured_cli_args/runtime_structured_cli_args.dart';
 
 import 'default_command_example.reflectable.dart';
 
@@ -59,8 +59,7 @@ class RootCommand extends SmartArg {
   late BenchmarkTestCommand benchmark;
 
   @Command()
-  late BenchmarkTestCommand lateDefinedBenchmark = BenchmarkTestCommand()
-    ..times = 5;
+  late BenchmarkTestCommand lateDefinedBenchmark = BenchmarkTestCommand()..times = 5;
 
   @Command()
   BenchmarkTestCommand definedBenchmark = BenchmarkTestCommand()..times = 10;

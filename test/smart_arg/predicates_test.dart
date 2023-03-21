@@ -1,4 +1,4 @@
-import 'package:smart_arg_fork/src/predicates.dart' as p;
+import 'package:runtime_structured_cli_args/src/predicates.dart' as p;
 import 'package:test/test.dart';
 
 void main() {

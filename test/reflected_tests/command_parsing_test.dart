@@ -1,6 +1,6 @@
 // ignore_for_file: deprecated_member_use_from_same_package
 
-import 'package:smart_arg_fork/smart_arg_fork.dart';
+import 'package:runtime_structured_cli_args/runtime_structured_cli_args.dart';
 import 'package:test/test.dart';
 
 import 'command_parsing_test.reflectable.dart';
@@ -190,12 +190,7 @@ void main() {
         await cmd.parse(['get', '--filename=download.txt']);
         expect(cmd.verbose, null);
         expect(whatExecuted, 'get-command: download.txt');
-        expect(cmd.hookOrder, [
-          'preCommandParse',
-          'postCommandParse',
-          'preCommandExecute',
-          'postCommandExecute'
-        ]);
+        expect(cmd.hookOrder, ['preCommandParse', 'postCommandParse', 'preCommandExecute', 'postCommandExecute']);
       });
 
       test('executes with no arguments', () async {
@@ -253,8 +248,7 @@ void main() {
       });
 
       test('Second subcommand', () async {
-        await GrandFatherCommand()
-            .parse(['father', 'child', '--a-value=charlie']);
+        await GrandFatherCommand().parse(['father', 'child', '--a-value=charlie']);
         expect(whatExecuted, 'ChildCommand: charlie');
         expect(subcommandHookOrder, [
           'preGrandFatherCommandParse',
@@ -274,8 +268,7 @@ void main() {
       });
 
       test('Triply Nested subcommand', () async {
-        await GrandFatherCommand()
-            .parse(['father', 'child', 'child', '--a-value=delta']);
+        await GrandFatherCommand().parse(['father', 'child', 'child', '--a-value=delta']);
         expect(whatExecuted, 'ChildCommand: delta');
         expect(subcommandHookOrder, [
           'preGrandFatherCommandParse',
@@ -298,8 +291,7 @@ void main() {
         ]);
       });
 
-      test('Arguments beyond commands are executed as the last known command',
-          () async {
+      test('Arguments beyond commands are executed as the last known command', () async {
         await GrandFatherCommand().parse(['father', 'child']);
         expect(whatExecuted, 'ChildCommand: null');
         expect(subcommandHookOrder, [
@@ -320,8 +312,7 @@ void main() {
       });
 
       test('Nested SmartArg as Command', () async {
-        await GrandFatherCommand()
-            .parse(['grand-father', 'father', '--a-value=beta']);
+        await GrandFatherCommand().parse(['grand-father', 'father', '--a-value=beta']);
         expect(whatExecuted, 'FatherCommand: beta');
         expect(subcommandHookOrder, [
           'preGrandFatherCommandParse',

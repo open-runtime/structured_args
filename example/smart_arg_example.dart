@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:smart_arg_fork/smart_arg_fork.dart';
+import 'package:runtime_structured_cli_args/runtime_structured_cli_args.dart';
 
 import 'smart_arg_example.reflectable.dart';
 
@@ -36,8 +36,7 @@ class Args extends SmartArg {
     blah blah blah blah blah. This will be wrapped as needed. Thus, it will
     display beautifully in the console.
   ''',
-    afterHelp:
-        'This is just a single sentence but even it will be wrapped if necessary',
+    afterHelp: 'This is just a single sentence but even it will be wrapped if necessary',
   )
   @StringArgument()
   List<String>? names;

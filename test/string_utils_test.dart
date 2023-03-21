@@ -1,4 +1,4 @@
-import 'package:smart_arg_fork/src/string_utils.dart';
+import 'package:runtime_structured_cli_args/src/string_utils.dart';
 import 'package:test/test.dart';
 
 void main() {

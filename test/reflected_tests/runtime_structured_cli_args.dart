@@ -1,10 +1,10 @@
 import 'dart:io';
 
 import 'package:path/path.dart' as path;
-import 'package:smart_arg_fork/smart_arg_fork.dart';
+import 'package:runtime_structured_cli_args/runtime_structured_cli_args.dart';
 import 'package:test/test.dart';
 
-import 'smart_arg_test.reflectable.dart';
+import 'runtime_structured_cli_args.reflectable.dart';
 
 @SmartArg.reflectable
 @Parser(
@@ -618,8 +618,7 @@ void main() {
       test('file that does not exist', () async {
         try {
           var args = TestFileDirectoryMustExist();
-          await args
-              .parse(['--file=.${path.separator}file-that-does-not-exist.txt']);
+          await args.parse(['--file=.${path.separator}file-that-does-not-exist.txt']);
           fail('file that does not exist did not throw an exception');
         } on ArgumentError {
           expect(1, 1);
@@ -675,8 +674,7 @@ void main() {
         expect(args.extras!.contains('Doe'), true);
       });
 
-      test('set to --args but using mixed case for argument terminator',
-          () async {
+      test('set to --args but using mixed case for argument terminator', () async {
         var args = TestArgumentTerminatorSet();
         await args.parse(['--name=John', '--ArGS', '--other=Jack', 'Doe']);
         expect(args.name, 'John');

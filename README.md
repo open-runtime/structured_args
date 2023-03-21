@@ -2,8 +2,8 @@ Smart Arg
 =========
 
 [![CircleCI](https://circleci.com/gh/axrs/smart_arg/tree/master.svg?style=svg)](https://circleci.com/gh/axrs/smart_arg/?branch=master)
-[![Pub](https://img.shields.io/pub/v/smart_arg_fork.svg)](https://pub.dartlang.org/packages/smart_arg_fork)
-![Pub Version (including pre-releases)](https://img.shields.io/pub/v/smart_arg_fork?include_prereleases)
+[![Pub](https://img.shields.io/pub/v/runtime_structured_cli_args.svg)](https://pub.dartlang.org/packages/runtime_structured_cli_args)
+![Pub Version (including pre-releases)](https://img.shields.io/pub/v/runtime_structured_cli_args?include_prereleases)
 
 A source generated, simple to use command line argument parser. The main rationale behind this argument parser is the
 use of a class to store the argument values. Therefore, you gain static type checking and code completion.
@@ -22,16 +22,16 @@ parameter or extra.
 
 ## Argument Types
 
-* [Boolean](https://pub.dev/documentation/smart_arg_fork/latest/smart_arg_fork/BooleanArgument-class.html)
-* [Command](https://pub.dev/documentation/smart_arg_fork/latest/smart_arg_fork/Command-class.html)
-  * and [DefaultCommand](https://pub.dev/documentation/smart_arg_fork/latest/smart_arg_fork/DefaultCommand-class.html)
-* [Directory](https://pub.dev/documentation/smart_arg_fork/latest/smart_arg_fork/DirectoryArgument-class.html)
-* [Double](https://pub.dev/documentation/smart_arg_fork/latest/smart_arg_fork/DoubleArgument-class.html)
-* [Enum](https://pub.dev/documentation/smart_arg_fork/latest/smart_arg_fork/EnumArgument-class.html)
-* [File](https://pub.dev/documentation/smart_arg_fork/latest/smart_arg_fork/FileArgument-class.html)
-* [Help](https://pub.dev/documentation/smart_arg_fork/latest/smart_arg_fork/HelpArgument-class.html)
-* [Integer](https://pub.dev/documentation/smart_arg_fork/latest/smart_arg_fork/IntegerArgument-class.html)
-* [String](https://pub.dev/documentation/smart_arg_fork/latest/smart_arg_fork/StringArgument-class.html)
+* [Boolean](https://pub.dev/documentation/runtime_structured_cli_args/latest/runtime_structured_cli_args/BooleanArgument-class.html)
+* [Command](https://pub.dev/documentation/runtime_structured_cli_args/latest/runtime_structured_cli_args/Command-class.html)
+  * and [DefaultCommand](https://pub.dev/documentation/runtime_structured_cli_args/latest/runtime_structured_cli_args/DefaultCommand-class.html)
+* [Directory](https://pub.dev/documentation/runtime_structured_cli_args/latest/runtime_structured_cli_args/DirectoryArgument-class.html)
+* [Double](https://pub.dev/documentation/runtime_structured_cli_args/latest/runtime_structured_cli_args/DoubleArgument-class.html)
+* [Enum](https://pub.dev/documentation/runtime_structured_cli_args/latest/runtime_structured_cli_args/EnumArgument-class.html)
+* [File](https://pub.dev/documentation/runtime_structured_cli_args/latest/runtime_structured_cli_args/FileArgument-class.html)
+* [Help](https://pub.dev/documentation/runtime_structured_cli_args/latest/runtime_structured_cli_args/HelpArgument-class.html)
+* [Integer](https://pub.dev/documentation/runtime_structured_cli_args/latest/runtime_structured_cli_args/IntegerArgument-class.html)
+* [String](https://pub.dev/documentation/runtime_structured_cli_args/latest/runtime_structured_cli_args/StringArgument-class.html)
 
 ## Build Process
 
@@ -58,7 +58,7 @@ $ pub run build_runner build
 ### Simple CLI
 
 ```dart
-import 'package:smart_arg_fork/smart_arg_fork.dart';
+import 'package:runtime_structured_cli_args/runtime_structured_cli_args.dart';
 
 import 'readme_example.reflectable.dart';
 
@@ -180,7 +180,7 @@ More complex command line applications often times have commands. These commands
 `SmartArg` accomplishes this very easily:
 
 ```dart
-import 'package:smart_arg_fork/smart_arg_fork.dart';
+import 'package:runtime_structured_cli_args/runtime_structured_cli_args.dart';
 
 import 'command_example.reflectable.dart';
 
@@ -264,7 +264,7 @@ definitions between multiple commands. Just remember to annotate each `mixin` wi
 > argument assigning process.
 
 ```dart
-import 'package:smart_arg_fork/smart_arg_fork.dart';
+import 'package:runtime_structured_cli_args/runtime_structured_cli_args.dart';
 
 import 'advanced_command_example.reflectable.dart';
 
@@ -378,6 +378,6 @@ docker run --pull dart:sdk-stable
 Please send pull requests, feature requests and bug reports to the
 [issue tracker][tracker].
 
-[tracker]: https://github.com/axrs/smart_arg_fork
-[smart_arg_example.dart]: https://github.com/axrs/smart_arg_fork/blob/master-forked/example/smart_arg_example.dart
+[tracker]: https://github.com/axrs/runtime_structured_cli_args
+[smart_arg_example.dart]: https://github.com/axrs/runtime_structured_cli_args/blob/master-forked/example/smart_arg_example.dart
 [reflectable]: https://pub.dev/packages/reflectable

@@ -1,4 +1,4 @@
-import 'package:smart_arg_fork/smart_arg_fork.dart';
+import 'package:runtime_structured_cli_args/runtime_structured_cli_args.dart';
 import 'package:test/test.dart';
 
 enum Echo { hello, world, helloWorld }

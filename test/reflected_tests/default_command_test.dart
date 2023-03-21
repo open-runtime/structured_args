@@ -1,4 +1,4 @@
-import 'package:smart_arg_fork/smart_arg_fork.dart';
+import 'package:runtime_structured_cli_args/runtime_structured_cli_args.dart';
 import 'package:test/test.dart';
 
 import 'default_command_test.reflectable.dart';
@@ -13,8 +13,7 @@ class UnitTestCommand extends SmartArg {
   String? suite;
 
   @override
-  Future<void> execute() async =>
-      SmartArg.output('Running ${suite ?? 'Unit'} Tests');
+  Future<void> execute() async => SmartArg.output('Running ${suite ?? 'Unit'} Tests');
 }
 
 @SmartArg.reflectable
@@ -42,8 +41,7 @@ class BenchmarkTestCommand extends SmartArg {
   int times = 1;
 
   @override
-  Future<void> execute() async =>
-      SmartArg.output('Running Benchmark Tests $times times');
+  Future<void> execute() async => SmartArg.output('Running Benchmark Tests $times times');
 }
 
 @SmartArg.reflectable
@@ -62,8 +60,7 @@ class RootCommand extends SmartArg {
   late BenchmarkTestCommand benchmark;
 
   @Command()
-  late BenchmarkTestCommand lateDefinedBenchmark = BenchmarkTestCommand()
-    ..times = 5;
+  late BenchmarkTestCommand lateDefinedBenchmark = BenchmarkTestCommand()..times = 5;
 
   @Command()
   BenchmarkTestCommand definedBenchmark = BenchmarkTestCommand()..times = 10;

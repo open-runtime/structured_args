@@ -1,4 +1,4 @@
-library smart_arg_fork;
+library runtime_structured_cli_args;
 
 export 'src/argument.dart';
 export 'src/boolean_argument.dart';

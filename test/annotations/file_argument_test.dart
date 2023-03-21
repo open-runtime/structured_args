@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:path/path.dart' as path;
-import 'package:smart_arg_fork/smart_arg_fork.dart';
+import 'package:runtime_structured_cli_args/runtime_structured_cli_args.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -35,8 +35,7 @@ void main() {
           var arg = const FileArgument(mustExist: true);
 
           try {
-            var _ =
-                arg.handleValue('file', path.join('.', 'does-not-exist.txt'));
+            var _ = arg.handleValue('file', path.join('.', 'does-not-exist.txt'));
             fail('file does not exist, an exception should have been thrown');
           } on ArgumentError {
             expect(1, 1);
