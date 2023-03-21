@@ -38,12 +38,12 @@ class EnumArgument<T> extends Argument {
   }
 
   /// Finds the first Enum value which matches the supplied value.
-  /// Enumeration values are compared by using camelCase names
+  /// Enumeration values are compared by using snakeCase names
   T? _findFirstValue(dynamic val) {
     return values.firstWhereOrNull(
       (T element) =>
-          element.toString().split('.')[1].camelCase ==
-          val.toString().camelCase,
+          element.toString().split('.')[1].snakeCase ==
+          val.toString().snakeCase,
     );
   }
 
